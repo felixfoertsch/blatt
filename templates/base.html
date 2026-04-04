@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}{{ title }}{% endblock %}</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	{{ meta_tags | safe }}
+	{% block head %}{% endblock %}
+	<style>
+		*, *::before, *::after { box-sizing: border-box; }
+		:root {
+			--color-bg: #ffffff;
+			--color-text: #1a1a1a;
+			--color-muted: #666666;
+			--color-accent: #2563eb;
+			--color-border: #e5e7eb;
+			--color-draft: #fef3c7;
+			--color-draft-border: #f59e0b;
+			--color-callout-note: #eff6ff;
+			--color-callout-warn: #fffbeb;
+			--color-callout-danger: #fef2f2;
+			font-size: 16px;
+		}
+		body {
+			margin: 0;
+			font-family: Georgia, 'Times New Roman', serif;
+			background: var(--color-bg);
+			color: var(--color-text);
+			line-height: 1.7;
+		}
+		.site-header {
+			border-bottom: 1px solid var(--color-border);
+			padding: 1rem 2rem;
+		}
+		.site-header a {
+			text-decoration: none;
+			color: var(--color-text);
+			font-weight: bold;
+			font-family: system-ui, sans-serif;
+		}
+		.site-main {
+			max-width: 720px;
+			margin: 0 auto;
+			padding: 2rem 1.5rem;
+		}
+		.site-footer {
+			border-top: 1px solid var(--color-border);
+			padding: 1rem 2rem;
+			text-align: center;
+			font-size: 0.8rem;
+			color: var(--color-muted);
+			font-family: system-ui, sans-serif;
+		}
+		h1, h2, h3, h4, h5, h6 {
+			font-family: system-ui, sans-serif;
+			line-height: 1.3;
+		}
+		a { color: var(--color-accent); }
+		code {
+			background: #f3f4f6;
+			padding: 0.1em 0.3em;
+			border-radius: 3px;
+			font-size: 0.9em;
+		}
+		pre code { background: none; padding: 0; }
+		pre {
+			background: #1e1e2e;
+			color: #cdd6f4;
+			padding: 1rem;
+			border-radius: 6px;
+			overflow-x: auto;
+			font-size: 0.875rem;
+		}
+		blockquote {
+			margin: 1rem 0;
+			padding: 0.5rem 1rem;
+			border-left: 3px solid var(--color-border);
+			color: var(--color-muted);
+		}
+		.callout, .admonition {
+			border-radius: 6px;
+			padding: 0.75rem 1rem;
+			margin: 1rem 0;
+			border-left: 4px solid;
+		}
+		.callout-note { background: var(--color-callout-note); border-color: var(--color-accent); }
+		.callout-warning { background: var(--color-callout-warn); border-color: #f59e0b; }
+		.callout-danger { background: var(--color-callout-danger); border-color: #ef4444; }
+		.draft-banner {
+			background: var(--color-draft);
+			border: 1px solid var(--color-draft-border);
+			color: #92400e;
+			padding: 0.5rem 1rem;
+			border-radius: 4px;
+			margin-bottom: 1.5rem;
+			font-family: system-ui, sans-serif;
+			font-size: 0.875rem;
+		}
+		img { max-width: 100%; height: auto; }
+		table { border-collapse: collapse; width: 100%; }
+		th, td { border: 1px solid var(--color-border); padding: 0.5rem 0.75rem; text-align: left; }
+		th { background: #f9fafb; }
+	</style>
+</head>
+<body>
+	<header class="site-header">
+		<a href="/">{{ config.site.name }}</a>
+	</header>
+	{% block body %}{% endblock %}
+	<footer class="site-footer">Powered by Blatt</footer>
+</body>
+</html>

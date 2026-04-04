@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block body %}
+<main class="site-main">
+	{% if draft_banner %}
+	<div class="draft-banner">Draft — not published</div>
+	{% endif %}
+	<h1>{{ title }}</h1>
+	{% if content %}
+	{{ content | safe }}
+	{% endif %}
+	<ul class="collection-list" style="list-style: none; padding: 0; margin-top: 2rem;">
+		{% for p in pages %}
+		<li style="padding: 1rem 0; border-bottom: 1px solid var(--color-border);">
+			<div style="display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap;">
+				<a href="{{ p.slug }}{{ preview_query }}" style="font-family: system-ui, sans-serif; font-weight: 600; font-size: 1.1rem;">{{ p.title }}</a>
+				{% if p.draft %}
+				<span style="background: var(--color-draft); color: #92400e; border: 1px solid var(--color-draft-border); padding: 0.1em 0.4em; border-radius: 3px; font-size: 0.75rem; font-family: system-ui, sans-serif;">draft</span>
+				{% endif %}
+			</div>
+			{% if p.published_date %}
+			<div style="color: var(--color-muted); font-size: 0.875rem; font-family: system-ui, sans-serif; margin-top: 0.25rem;">
+				<time datetime="{{ p.published_date }}">{{ p.published_date }}</time>
+			</div>
+			{% endif %}
+			{% if p.description %}
+			<p style="margin: 0.5rem 0 0; color: var(--color-text);">{{ p.description }}</p>
+			{% endif %}
+		</li>
+		{% else %}
+		<li style="color: var(--color-muted); font-family: system-ui, sans-serif;">No pages found.</li>
+		{% endfor %}
+	</ul>
+</main>
+{% endblock %}

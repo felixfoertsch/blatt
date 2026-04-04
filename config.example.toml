@@ -1,0 +1,100 @@
+# Blatt Configuration Example
+# Copy this file to config.toml and adjust as needed.
+# All settings are optional — omitting any key uses the shown default.
+
+# ─── Site ─────────────────────────────────────────────────────────────────────
+[site]
+# Display name of the site.
+name = "Blatt"
+
+# Canonical base URL, used for feeds, sitemaps, and absolute links.
+url = "http://localhost:3000"
+
+# BCP 47 language tag for the site's primary language.
+language = "en"
+
+# Short description of the site (used in meta tags and feeds).
+description = ""
+
+# Author name (used in feeds and meta tags).
+author = ""
+
+
+# ─── Server ───────────────────────────────────────────────────────────────────
+[server]
+# TCP port the HTTP server listens on.
+port = 3000
+
+# CIDR ranges or IP addresses that are treated as trusted (e.g. local LAN).
+# Requests from these addresses may bypass rate limiting or access draft pages.
+trusted_networks = []
+
+# Secret token for accessing draft/preview pages via ?token=<value>.
+# Leave empty to disable preview access entirely.
+preview_token = ""
+
+
+# ─── Markdown ─────────────────────────────────────────────────────────────────
+[markdown]
+# Syntax highlighting for fenced code blocks (via Shiki).
+syntax_highlighting = true
+
+# Footnote support ([^1] style).
+footnotes = true
+
+# Smart typography: convert "quotes", -- dashes, ... ellipsis.
+smart_typography = true
+
+# Inject id anchors on headings and render a link icon.
+heading_anchors = true
+
+# Wrap images in <figure> and render <figcaption> from the alt text.
+figure_captions = true
+
+# Add rel="noopener noreferrer" and target="_blank" to external links.
+external_links = true
+
+# Generate a table of contents from headings.
+toc = true
+
+# Render LaTeX math expressions via KaTeX ($ inline, $$ block).
+math = true
+
+# Support admonition blocks (:::note, :::warning, etc.).
+admonitions = true
+
+# PHP Markdown Extra-style definition lists.
+definition_lists = true
+
+# GFM-style task lists (- [ ] / - [x]).
+task_lists = true
+
+# Render Mermaid diagram fences as <div class="mermaid"> for client-side rendering.
+mermaid = true
+
+# Abbreviation expansion (*[HTML]: HyperText Markup Language).
+abbreviations = true
+
+# Superscript (^text^) and subscript (~text~) syntax.
+superscript_subscript = true
+
+# ==highlight== mark syntax.
+highlight_mark = true
+
+
+# ─── Feed ─────────────────────────────────────────────────────────────────────
+[feed]
+# Serve an Atom/RSS feed.
+enabled = true
+
+# URL path for the feed.
+path = "/feed.xml"
+
+
+# ─── Sitemap ──────────────────────────────────────────────────────────────────
+[sitemap]
+# Serve a sitemap.xml.
+enabled = true
+
+# URL path for the sitemap.
+path = "/sitemap.xml"

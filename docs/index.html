@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Blatt — Drop a file, publish a page</title>
+	<meta name="description" content="Blatt is a zero-config markdown publishing server. Drop files in a folder. They become a website.">
+	<meta property="og:title" content="Blatt — Drop a file, publish a page">
+	<meta property="og:description" content="Zero-config markdown publishing server. No admin. No database. No build step.">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://felixfoertsch.github.io/blatt/">
+	<meta property="og:image" content="https://felixfoertsch.github.io/blatt/icon.svg">
+	<link rel="icon" type="image/svg+xml" href="icon.svg">
+	<link rel="apple-touch-icon" href="apple-touch-icon.png">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--paper: #faf8f4;
+			--paper-dark: #f0ece4;
+			--ink: #1a1612;
+			--ink-light: #5c554a;
+			--ink-faint: #9e9588;
+			--accent: #1e3a5f;
+			--accent-light: #2a5a8f;
+			--rule: #d4cfc6;
+			--code-bg: #1a1612;
+			--code-fg: #e8e2d8;
+			--code-green: #a8c97f;
+			--code-blue: #7eb8da;
+			--code-yellow: #e2c47e;
+			--code-muted: #7a7267;
+			--font-display: 'Playfair Display', Georgia, serif;
+			--font-body: 'Source Serif 4', Georgia, serif;
+			--font-mono: 'JetBrains Mono', monospace;
+		}
+
+		* { margin: 0; padding: 0; box-sizing: border-box; }
+
+		html {
+			font-size: 18px;
+			scroll-behavior: smooth;
+		}
+
+		body {
+			font-family: var(--font-body);
+			color: var(--ink);
+			background: var(--paper);
+			line-height: 1.7;
+			-webkit-font-smoothing: antialiased;
+		}
+
+		/* --- GRAIN OVERLAY --- */
+		body::before {
+			content: '';
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			z-index: 1000;
+			opacity: 0.03;
+			background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+		}
+
+		/* --- HERO --- */
+		.hero {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding: 4rem 2rem;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.hero::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 10%;
+			right: 10%;
+			height: 1px;
+			background: var(--rule);
+		}
+
+		.hero-inner {
+			max-width: 72rem;
+			margin: 0 auto;
+			width: 100%;
+		}
+
+		.hero-label {
+			font-family: var(--font-mono);
+			font-size: 0.7rem;
+			letter-spacing: 0.2em;
+			text-transform: uppercase;
+			color: var(--ink-faint);
+			margin-bottom: 2rem;
+			opacity: 0;
+			animation: fadeUp 0.8s ease 0.2s forwards;
+		}
+
+		.hero h1 {
+			font-family: var(--font-display);
+			font-weight: 900;
+			font-size: clamp(3.5rem, 10vw, 8rem);
+			line-height: 0.95;
+			letter-spacing: -0.03em;
+			margin-bottom: 2rem;
+			opacity: 0;
+			animation: fadeUp 0.8s ease 0.4s forwards;
+		}
+
+		.hero h1 em {
+			font-style: italic;
+			font-weight: 400;
+			color: var(--accent);
+		}
+
+		.hero-subtitle {
+			font-size: 1.35rem;
+			color: var(--ink-light);
+			max-width: 36rem;
+			line-height: 1.6;
+			opacity: 0;
+			animation: fadeUp 0.8s ease 0.6s forwards;
+		}
+
+		.hero-cta {
+			display: flex;
+			gap: 1.5rem;
+			margin-top: 3rem;
+			flex-wrap: wrap;
+			opacity: 0;
+			animation: fadeUp 0.8s ease 0.8s forwards;
+		}
+
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			font-family: var(--font-mono);
+			font-size: 0.8rem;
+			letter-spacing: 0.05em;
+			text-decoration: none;
+			padding: 0.9rem 2rem;
+			transition: all 0.2s ease;
+		}
+
+		.btn-primary {
+			background: var(--ink);
+			color: var(--paper);
+			border: 2px solid var(--ink);
+		}
+		.btn-primary:hover {
+			background: var(--accent);
+			border-color: var(--accent);
+		}
+
+		.btn-secondary {
+			background: transparent;
+			color: var(--ink);
+			border: 2px solid var(--rule);
+		}
+		.btn-secondary:hover {
+			border-color: var(--ink);
+		}
+
+		/* --- SECTION LAYOUT --- */
+		section {
+			padding: 6rem 2rem;
+			max-width: 72rem;
+			margin: 0 auto;
+		}
+
+		.section-label {
+			font-family: var(--font-mono);
+			font-size: 0.65rem;
+			letter-spacing: 0.25em;
+			text-transform: uppercase;
+			color: var(--ink-faint);
+			margin-bottom: 1rem;
+		}
+
+		section h2 {
+			font-family: var(--font-display);
+			font-size: 2.5rem;
+			font-weight: 700;
+			letter-spacing: -0.02em;
+			margin-bottom: 1rem;
+		}
+
+		section h2 em {
+			font-style: italic;
+			font-weight: 400;
+		}
+
+		.section-intro {
+			font-size: 1.15rem;
+			color: var(--ink-light);
+			max-width: 38rem;
+			margin-bottom: 3rem;
+		}
+
+		/* --- PHILOSOPHY --- */
+		.philosophy {
+			background: var(--paper-dark);
+			padding: 6rem 2rem;
+			border-top: 1px solid var(--rule);
+			border-bottom: 1px solid var(--rule);
+		}
+
+		.philosophy-inner {
+			max-width: 72rem;
+			margin: 0 auto;
+		}
+
+		.philosophy-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 3rem;
+			margin-top: 3rem;
+		}
+
+		.phil-item {
+			border-top: 2px solid var(--ink);
+			padding-top: 1.5rem;
+		}
+
+		.phil-item h3 {
+			font-family: var(--font-display);
+			font-size: 1.3rem;
+			margin-bottom: 0.75rem;
+		}
+
+		.phil-item p {
+			color: var(--ink-light);
+			font-size: 0.95rem;
+			line-height: 1.65;
+		}
+
+		/* --- DEMO --- */
+		.demo {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 3rem;
+			align-items: start;
+			margin-top: 3rem;
+		}
+
+		.demo-file {
+			position: relative;
+		}
+
+		.demo-file-label {
+			font-family: var(--font-mono);
+			font-size: 0.7rem;
+			color: var(--ink-faint);
+			letter-spacing: 0.1em;
+			margin-bottom: 0.5rem;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+		.demo-file-label::before {
+			content: '';
+			width: 8px;
+			height: 8px;
+			border-radius: 50%;
+			background: var(--code-green);
+		}
+
+		pre {
+			background: var(--code-bg);
+			color: var(--code-fg);
+			font-family: var(--font-mono);
+			font-size: 0.78rem;
+			line-height: 1.7;
+			padding: 1.5rem 2rem;
+			overflow-x: auto;
+			border-radius: 2px;
+			position: relative;
+		}
+
+		pre .comment { color: var(--code-muted); }
+		pre .key { color: var(--code-blue); }
+		pre .value { color: var(--code-green); }
+		pre .string { color: var(--code-yellow); }
+		pre .heading { color: var(--code-blue); font-weight: 500; }
+		pre .bold { font-weight: 500; color: #fff; }
+		pre .math { color: var(--code-yellow); }
+
+		.arrow-connector {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 2rem;
+			color: var(--ink-faint);
+			padding: 1rem 0;
+		}
+
+		/* --- FEATURES --- */
+		.features-grid {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 1px;
+			background: var(--rule);
+			margin-top: 3rem;
+		}
+
+		.feature {
+			background: var(--paper);
+			padding: 2rem 2.5rem;
+		}
+
+		.feature h3 {
+			font-family: var(--font-display);
+			font-size: 1.1rem;
+			margin-bottom: 0.5rem;
+		}
+
+		.feature p {
+			color: var(--ink-light);
+			font-size: 0.9rem;
+			line-height: 1.6;
+		}
+
+		/* --- QUICKSTART --- */
+		.quickstart-steps {
+			counter-reset: step;
+			margin-top: 3rem;
+		}
+
+		.step {
+			display: grid;
+			grid-template-columns: 3rem 1fr;
+			gap: 2rem;
+			margin-bottom: 3rem;
+			align-items: start;
+		}
+
+		.step-number {
+			counter-increment: step;
+			font-family: var(--font-display);
+			font-size: 2rem;
+			font-weight: 700;
+			color: var(--ink-faint);
+			line-height: 1;
+			padding-top: 0.2rem;
+		}
+
+		.step-number::before {
+			content: counter(step);
+		}
+
+		.step-content h3 {
+			font-family: var(--font-body);
+			font-size: 1.1rem;
+			font-weight: 600;
+			margin-bottom: 0.75rem;
+		}
+
+		.step-content p {
+			color: var(--ink-light);
+			font-size: 0.95rem;
+			margin-bottom: 1rem;
+		}
+
+		.step-content pre {
+			font-size: 0.75rem;
+		}
+
+		/* --- NOT LIST --- */
+		.not-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 2rem;
+			margin-top: 3rem;
+		}
+
+		.not-item {
+			font-family: var(--font-mono);
+			font-size: 0.8rem;
+			color: var(--ink-light);
+			padding-left: 1.5rem;
+			position: relative;
+		}
+
+		.not-item::before {
+			content: '\00d7';
+			position: absolute;
+			left: 0;
+			color: var(--ink-faint);
+			font-size: 1rem;
+		}
+
+		/* --- FOOTER --- */
+		footer {
+			border-top: 1px solid var(--rule);
+			padding: 3rem 2rem;
+			text-align: center;
+		}
+
+		footer p {
+			font-family: var(--font-mono);
+			font-size: 0.7rem;
+			letter-spacing: 0.1em;
+			color: var(--ink-faint);
+		}
+
+		footer a {
+			color: var(--ink-light);
+			text-decoration: none;
+			border-bottom: 1px solid var(--rule);
+			transition: border-color 0.2s;
+		}
+
+		footer a:hover {
+			border-color: var(--ink);
+		}
+
+		/* --- ANIMATIONS --- */
+		@keyframes fadeUp {
+			from { opacity: 0; transform: translateY(1.5rem); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+		.reveal {
+			opacity: 0;
+			transform: translateY(1.5rem);
+			transition: opacity 0.6s ease, transform 0.6s ease;
+		}
+
+		.reveal.visible {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		/* --- RESPONSIVE --- */
+		@media (max-width: 768px) {
+			html { font-size: 16px; }
+
+			.philosophy-grid,
+			.not-grid { grid-template-columns: 1fr; }
+
+			.demo,
+			.features-grid { grid-template-columns: 1fr; }
+
+			.step { grid-template-columns: 2rem 1fr; gap: 1rem; }
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after {
+				animation-duration: 0.01ms !important;
+				transition-duration: 0.01ms !important;
+			}
+		}
+	</style>
+</head>
+<body>
+
+	<!-- HERO -->
+	<header class="hero">
+		<div class="hero-inner">
+			<p class="hero-label">A markdown publishing server</p>
+			<h1>Drop a file.<br><em>Publish a page.</em></h1>
+			<p class="hero-subtitle">
+				Blatt is a zero-config publishing server for people who write in markdown.
+				No admin panel. No database. No build step. Just files.
+			</p>
+			<div class="hero-cta">
+				<a href="https://github.com/felixfoertsch/blatt" class="btn btn-primary">View on GitHub</a>
+				<a href="#quickstart" class="btn btn-secondary">Get started</a>
+			</div>
+		</div>
+	</header>
+
+	<!-- PHILOSOPHY -->
+	<div class="philosophy">
+		<div class="philosophy-inner">
+			<p class="section-label reveal">Philosophy</p>
+			<h2 class="reveal">The filesystem is <em>your admin panel</em></h2>
+			<div class="philosophy-grid">
+				<div class="phil-item reveal">
+					<h3>Files are the interface</h3>
+					<p>Your content lives in folders as markdown files. Create a folder, drop an index.md, it's a page. No import, no migration, no lock-in.</p>
+				</div>
+				<div class="phil-item reveal">
+					<h3>Everything works by default</h3>
+					<p>Math rendering, syntax highlighting, footnotes, RSS feeds, sitemaps, Open Graph tags. All on. Toggle off what you don't need in one config file.</p>
+				</div>
+				<div class="phil-item reveal">
+					<h3>Single-person publishing</h3>
+					<p>No accounts, no roles, no permissions. You are the author. If you can see the folder, you're the admin. Publish by writing. Draft by setting one field.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- HOW IT WORKS -->
+	<section>
+		<p class="section-label reveal">How it works</p>
+		<h2 class="reveal">A folder becomes <em>a website</em></h2>
+		<p class="section-intro reveal">
+			Write markdown with YAML frontmatter. Blatt reads it, renders it through a full-featured pipeline, applies your template, and serves it.
+		</p>
+		<div class="demo">
+			<div class="demo-file reveal">
+				<p class="demo-file-label">blog/2026-04-04-hello/index.md</p>
+				<pre><span class="comment">---</span>
+<span class="key">title:</span> <span class="string">Hello World</span>
+<span class="key">published:</span> <span class="value">2026-04-04</span>
+<span class="key">template:</span> <span class="value">post</span>
+<span class="key">taxonomy:</span>
+  <span class="key">tags:</span> <span class="value">[intro, first-post]</span>
+<span class="comment">---</span>
+
+<span class="heading"># Hello from Blatt</span>
+
+A paragraph with <span class="bold">**bold**</span> and math: <span class="math">$E = mc^2$</span>
+
+<span class="comment">```js</span>
+<span class="value">const message = "it works";</span>
+<span class="comment">```</span>
+
+<span class="comment">:::</span><span class="key">note</span>
+This is a callout block.
+<span class="comment">:::</span></pre>
+			</div>
+			<div class="demo-file reveal">
+				<p class="demo-file-label">What your visitors see</p>
+				<div style="background: #fff; border: 1px solid var(--rule); padding: 2rem; font-size: 0.9rem; line-height: 1.7;">
+					<p style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--ink-faint); margin-bottom: 1rem;">2026-04-04 &middot; 1 min read &middot; intro, first-post</p>
+					<h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 1rem;">Hello from Blatt</h3>
+					<p style="margin-bottom: 1rem;">A paragraph with <strong>bold</strong> and math: <em style="font-style: italic;">E = mc&sup2;</em></p>
+					<div style="background: var(--code-bg); color: var(--code-fg); font-family: var(--font-mono); font-size: 0.75rem; padding: 1rem; margin-bottom: 1rem;"><span style="color: var(--code-blue);">const</span> message = <span style="color: var(--code-yellow);">"it works"</span>;</div>
+					<div style="background: #f0f7ff; border-left: 3px solid var(--accent); padding: 0.75rem 1rem; font-size: 0.85rem;">This is a callout block.</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- FEATURES -->
+	<section>
+		<p class="section-label reveal">Built-in</p>
+		<h2 class="reveal">Batteries included, <em>no assembly required</em></h2>
+		<p class="section-intro reveal">Everything you need for a publishing site ships out of the box. Every feature can be toggled off in config.toml.</p>
+		<div class="features-grid reveal">
+			<div class="feature">
+				<h3>Markdown pipeline</h3>
+				<p>GFM tables, footnotes, definition lists, task lists, smart typography, heading anchors, figure captions, external link decoration.</p>
+			</div>
+			<div class="feature">
+				<h3>Math and code</h3>
+				<p>KaTeX for LaTeX math expressions. Shiki for syntax highlighting with VS Code themes. Mermaid diagrams from fenced code blocks.</p>
+			</div>
+			<div class="feature">
+				<h3>Templates</h3>
+				<p>Nunjucks templates with inheritance. Set a default, override per page via frontmatter. Ship your own or use the built-in theme.</p>
+			</div>
+			<div class="feature">
+				<h3>Collections</h3>
+				<p>Blog index, project listing, any aggregation. Declare what to collect in frontmatter, the template receives sorted pages.</p>
+			</div>
+			<div class="feature">
+				<h3>RSS + Sitemap</h3>
+				<p>Auto-generated /feed.xml and /sitemap.xml from your published pages. Tag and category index pages created from taxonomy.</p>
+			</div>
+			<div class="feature">
+				<h3>SEO</h3>
+				<p>Open Graph tags, JSON-LD structured data, canonical URLs, meta descriptions, reading time. All generated from your frontmatter.</p>
+			</div>
+			<div class="feature">
+				<h3>Drafts</h3>
+				<p>Set published: false in frontmatter. Preview with a secret token in the URL. Public visitors see a 404.</p>
+			</div>
+			<div class="feature">
+				<h3>Live reload</h3>
+				<p>File watcher detects changes to content and templates. Next request serves the update. No restart needed.</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- QUICKSTART -->
+	<section id="quickstart">
+		<p class="section-label reveal">Get started</p>
+		<h2 class="reveal">Running in <em>sixty seconds</em></h2>
+		<div class="quickstart-steps">
+			<div class="step reveal">
+				<div class="step-number"></div>
+				<div class="step-content">
+					<h3>Create a docker-compose.yml</h3>
+					<pre><span class="key">services:</span>
+  <span class="key">blatt:</span>
+    <span class="key">image:</span> <span class="value">ghcr.io/felixfoertsch/blatt</span>
+    <span class="key">ports:</span>
+      - <span class="string">"3000:3000"</span>
+    <span class="key">volumes:</span>
+      - <span class="string">./content:/data/content</span></pre>
+				</div>
+			</div>
+			<div class="step reveal">
+				<div class="step-number"></div>
+				<div class="step-content">
+					<h3>Write your first page</h3>
+					<pre><span class="comment">mkdir -p content/hello</span>
+<span class="comment">cat > content/hello/index.md << 'EOF'</span>
+<span class="key">---</span>
+<span class="key">title:</span> <span class="string">Hello World</span>
+<span class="key">published:</span> <span class="value">2026-04-04</span>
+<span class="key">---</span>
+
+<span class="heading"># It works!</span>
+<span class="comment">EOF</span></pre>
+				</div>
+			</div>
+			<div class="step reveal">
+				<div class="step-number"></div>
+				<div class="step-content">
+					<h3>Start and visit</h3>
+					<pre><span class="comment">docker compose up -d</span>
+<span class="value"># open http://localhost:3000/hello</span></pre>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- WHAT BLATT IS NOT -->
+	<div class="philosophy">
+		<div class="philosophy-inner">
+			<p class="section-label reveal">What Blatt is not</p>
+			<h2 class="reveal">Intentionally <em>absent</em></h2>
+			<div class="not-grid" style="margin-top: 3rem;">
+				<div class="not-item reveal">No admin panel</div>
+				<div class="not-item reveal">No user accounts</div>
+				<div class="not-item reveal">No database</div>
+				<div class="not-item reveal">No build step</div>
+				<div class="not-item reveal">No plugin system</div>
+				<div class="not-item reveal">No comments</div>
+				<div class="not-item reveal">No search (yet)</div>
+				<div class="not-item reveal">No multi-language routing</div>
+				<div class="not-item reveal">No upsells</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- FOOTER -->
+	<footer>
+		<p>
+			Blatt is open source under the MIT license.
+			<a href="https://github.com/felixfoertsch/blatt">GitHub</a> &middot;
+			Built by <a href="https://felixfoertsch.de">Felix F&ouml;rtsch</a>
+		</p>
+	</footer>
+
+	<script>
+		const observer = new IntersectionObserver((entries) => {
+			for (const entry of entries) {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('visible');
+					observer.unobserve(entry.target);
+				}
+			}
+		}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+		for (const el of document.querySelectorAll('.reveal')) {
+			observer.observe(el);
+		}
+	</script>
+</body>
+</html>

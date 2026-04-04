@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Blatt{% endblock %}
+
+{% block body %}
+<main class="site-main">
+	<h1>Welcome to Blatt</h1>
+	<p style="color: var(--color-muted); font-family: system-ui, sans-serif;">
+		Your publishing server is running. No pages found yet — here's how to get started.
+	</p>
+
+	<h2>Quick start</h2>
+	<ol style="font-family: system-ui, sans-serif; line-height: 2;">
+		<li>Create a folder in your content directory, e.g. <code>hello/</code></li>
+		<li>Add an <code>index.md</code> file inside it</li>
+		<li>Visit <a href="/hello"><code>/hello</code></a> in your browser</li>
+	</ol>
+
+	<h2>Example <code>index.md</code></h2>
+	<pre><code>---
+title: Hello World
+description: My first page.
+published: 2026-01-01
+---
+
+# Hello World
+
+Welcome to my site. This is written in Markdown.</code></pre>
+
+	<h2>Frontmatter reference</h2>
+	<table>
+		<thead>
+			<tr>
+				<th>Field</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr><td><code>title</code></td><td>string</td><td>Page title (required)</td></tr>
+			<tr><td><code>description</code></td><td>string</td><td>Short summary for SEO and feeds</td></tr>
+			<tr><td><code>published</code></td><td>date or false</td><td>Publication date (YYYY-MM-DD) or <code>false</code> for drafts</td></tr>
+			<tr><td><code>template</code></td><td>string</td><td>Template name (default, post, collection, …)</td></tr>
+			<tr><td><code>taxonomy.tags</code></td><td>list</td><td>Tags for this page</td></tr>
+			<tr><td><code>taxonomy.category</code></td><td>list</td><td>Categories for this page</td></tr>
+		</tbody>
+	</table>
+
+	<p style="margin-top: 2rem; font-family: system-ui, sans-serif; color: var(--color-muted);">
+		This welcome page disappears automatically once you add your first page.
+	</p>
+</main>
+{% endblock %}

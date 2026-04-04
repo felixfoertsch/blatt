@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body %}
+<main class="site-main">
+	{% if draft_banner %}
+	<div class="draft-banner">Draft — not published</div>
+	{% endif %}
+	<article>
+		<header>
+			<h1>{{ title }}</h1>
+			<div class="post-meta" style="color: var(--color-muted); font-family: system-ui, sans-serif; font-size: 0.875rem; margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+				{% if published_date %}
+				<time datetime="{{ published_date }}">{{ published_date }}</time>
+				{% endif %}
+				{% if updated_date and updated_date != published_date %}
+				<span>Updated: <time datetime="{{ updated_date }}">{{ updated_date }}</time></span>
+				{% endif %}
+				<span>{{ reading_time }}</span>
+				{% if taxonomy.tags.length %}
+				<span class="tags">
+					{% for tag in taxonomy.tags %}
+					<a href="/tags/{{ tag }}" style="background: #f3f4f6; padding: 0.1em 0.5em; border-radius: 3px; text-decoration: none; color: var(--color-text); margin-right: 0.25rem;">{{ tag }}</a>
+					{% endfor %}
+				</span>
+				{% endif %}
+			</div>
+		</header>
+		{{ content | safe }}
+	</article>
+</main>
+{% endblock %}
