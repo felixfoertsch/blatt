@@ -501,17 +501,6 @@
 			to { opacity: 1; transform: translateY(0); }
 		}
 
-		.reveal {
-			opacity: 0;
-			transform: translateY(1.5rem);
-			transition: opacity 0.6s ease, transform 0.6s ease;
-		}
-
-		.reveal.visible {
-			opacity: 1;
-			transform: translateY(0);
-		}
-
 		/* --- RESPONSIVE --- */
 		@media (max-width: 768px) {
 			html { font-size: 16px; }
@@ -554,18 +543,18 @@
 	<!-- PHILOSOPHY -->
 	<div class="philosophy">
 		<div class="philosophy-inner">
-			<p class="section-label reveal">Philosophy</p>
-			<h2 class="reveal">The filesystem is <em>your admin panel</em></h2>
+			<p class="section-label">Philosophy</p>
+			<h2>The filesystem is <em>your admin panel</em></h2>
 			<div class="philosophy-grid">
-				<div class="phil-item reveal">
+				<div class="phil-item">
 					<h3>Files are the interface</h3>
 					<p>Your content lives in folders as markdown files. Create a folder, drop an index.md, it's a page. No import, no migration, no lock-in.</p>
 				</div>
-				<div class="phil-item reveal">
+				<div class="phil-item">
 					<h3>Everything works by default</h3>
 					<p>Math rendering, syntax highlighting, footnotes, RSS feeds, sitemaps, Open Graph tags. All on. Toggle off what you don't need in one config file.</p>
 				</div>
-				<div class="phil-item reveal">
+				<div class="phil-item">
 					<h3>Single-person publishing</h3>
 					<p>No accounts, no roles, no permissions. You are the author. If you can see the folder, you're the admin. Publish by writing. Draft by setting one field.</p>
 				</div>
@@ -575,13 +564,13 @@
 
 	<!-- HOW IT WORKS -->
 	<section>
-		<p class="section-label reveal">How it works</p>
-		<h2 class="reveal">A folder becomes <em>a website</em></h2>
-		<p class="section-intro reveal">
+		<p class="section-label">How it works</p>
+		<h2>A folder becomes <em>a website</em></h2>
+		<p class="section-intro">
 			Write markdown with YAML frontmatter. Blatt reads it, renders it through a full-featured pipeline, applies your template, and serves it.
 		</p>
 		<div class="demo">
-			<div class="demo-file reveal">
+			<div class="demo-file">
 				<p class="demo-file-label">blog/2026-04-04-hello/index.md</p>
 				<pre><span class="comment">---</span>
 <span class="key">title:</span> <span class="string">Hello World</span>
@@ -603,7 +592,7 @@ A paragraph with <span class="bold">**bold**</span> and math: <span class="math"
 This is a callout block.
 <span class="comment">:::</span></pre>
 			</div>
-			<div class="demo-file reveal">
+			<div class="demo-file">
 				<p class="demo-file-label">What your visitors see</p>
 				<div style="background: #fff; border: 1px solid var(--rule); padding: 2rem; font-size: 0.9rem; line-height: 1.7;">
 					<p style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--ink-faint); margin-bottom: 1rem;">2026-04-04 &middot; 1 min read &middot; intro, first-post</p>
@@ -618,10 +607,10 @@ This is a callout block.
 
 	<!-- FEATURES -->
 	<section>
-		<p class="section-label reveal">Built-in</p>
-		<h2 class="reveal">Batteries included, <em>no assembly required</em></h2>
-		<p class="section-intro reveal">Everything you need for a publishing site ships out of the box. Every feature can be toggled off in config.toml.</p>
-		<div class="features-grid reveal">
+		<p class="section-label">Built-in</p>
+		<h2>Batteries included, <em>no assembly required</em></h2>
+		<p class="section-intro">Everything you need for a publishing site ships out of the box. Every feature can be toggled off in config.toml.</p>
+		<div class="features-grid">
 			<div class="feature">
 				<h3>Markdown pipeline</h3>
 				<p>GFM tables, footnotes, definition lists, task lists, smart typography, heading anchors, figure captions, external link decoration.</p>
@@ -659,10 +648,10 @@ This is a callout block.
 
 	<!-- QUICKSTART -->
 	<section id="quickstart">
-		<p class="section-label reveal">Get started</p>
-		<h2 class="reveal">Running in <em>sixty seconds</em></h2>
+		<p class="section-label">Get started</p>
+		<h2>Running in <em>sixty seconds</em></h2>
 		<div class="quickstart-steps">
-			<div class="step reveal">
+			<div class="step">
 				<div class="step-number"></div>
 				<div class="step-content">
 					<h3>Create a docker-compose.yml</h3>
@@ -675,7 +664,7 @@ This is a callout block.
       - <span class="string">./content:/data/content</span></pre>
 				</div>
 			</div>
-			<div class="step reveal">
+			<div class="step">
 				<div class="step-number"></div>
 				<div class="step-content">
 					<h3>Write your first page</h3>
@@ -690,7 +679,7 @@ This is a callout block.
 <span class="comment">EOF</span></pre>
 				</div>
 			</div>
-			<div class="step reveal">
+			<div class="step">
 				<div class="step-number"></div>
 				<div class="step-content">
 					<h3>Start and visit</h3>
@@ -703,10 +692,10 @@ This is a callout block.
 
 	<!-- THEMES -->
 	<section>
-		<p class="section-label reveal">30 built-in themes</p>
-		<h2 class="reveal">One post, <em>thirty looks</em></h2>
-		<p class="section-intro reveal">Every theme ships with Blatt. Set <code style="font-family: var(--font-mono); font-size: 0.85em; background: var(--paper-dark); padding: 0.15em 0.4em; border-radius: 2px;">template: dracula</code> in frontmatter and you're done.</p>
-		<div class="themes-carousel reveal">
+		<p class="section-label">30 built-in themes</p>
+		<h2>One post, <em>thirty looks</em></h2>
+		<p class="section-intro">Every theme ships with Blatt. Set <code style="font-family: var(--font-mono); font-size: 0.85em; background: var(--paper-dark); padding: 0.15em 0.4em; border-radius: 2px;">template: dracula</code> in frontmatter and you're done.</p>
+		<div class="themes-carousel">
 			<div class="themes-track">
 				<div class="theme-card">
 					<div class="theme-preview" style="background: #008080;">
@@ -895,24 +884,24 @@ This is a callout block.
 				</div>
 			</div>
 		</div>
-		<p class="themes-hint reveal" style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); margin-top: 1.5rem; text-align: center;">Scroll to see more &rarr; &nbsp; 30 themes total</p>
+		<p class="themes-hint" style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); margin-top: 1.5rem; text-align: center;">Scroll to see more &rarr; &nbsp; 30 themes total</p>
 	</section>
 
 	<!-- WHAT BLATT IS NOT -->
 	<div class="philosophy">
 		<div class="philosophy-inner">
-			<p class="section-label reveal">What Blatt is not</p>
-			<h2 class="reveal">Intentionally <em>absent</em></h2>
+			<p class="section-label">What Blatt is not</p>
+			<h2>Intentionally <em>absent</em></h2>
 			<div class="not-grid" style="margin-top: 3rem;">
-				<div class="not-item reveal">No admin panel</div>
-				<div class="not-item reveal">No user accounts</div>
-				<div class="not-item reveal">No database</div>
-				<div class="not-item reveal">No build step</div>
-				<div class="not-item reveal">No plugin system</div>
-				<div class="not-item reveal">No comments</div>
-				<div class="not-item reveal">No search (yet)</div>
-				<div class="not-item reveal">No multi-language routing</div>
-				<div class="not-item reveal">No upsells</div>
+				<div class="not-item">No admin panel</div>
+				<div class="not-item">No user accounts</div>
+				<div class="not-item">No database</div>
+				<div class="not-item">No build step</div>
+				<div class="not-item">No plugin system</div>
+				<div class="not-item">No comments</div>
+				<div class="not-item">No search (yet)</div>
+				<div class="not-item">No multi-language routing</div>
+				<div class="not-item">No upsells</div>
 			</div>
 		</div>
 	</div>
@@ -926,19 +915,5 @@ This is a callout block.
 		</p>
 	</footer>
 
-	<script>
-		const observer = new IntersectionObserver((entries) => {
-			for (const entry of entries) {
-				if (entry.isIntersecting) {
-					entry.target.classList.add('visible');
-					observer.unobserve(entry.target);
-				}
-			}
-		}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-		for (const el of document.querySelectorAll('.reveal')) {
-			observer.observe(el);
-		}
-	</script>
 </body>
 </html>
