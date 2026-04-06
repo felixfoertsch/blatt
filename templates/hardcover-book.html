@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }} — {{ config.site.name }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #1a2f1a; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--cover: #1a2f1a; /* Forest green */
+			--gold: #c9a84c;
+			--gold-light: #e8c97a;
+			--gold-dim: #8a6e30;
+			--paper: #faf6ed;
+			--paper-dark: #f0e8d5;
+			--ink: #1c1208;
+			--ink-dim: #4a3c20;
+			--ink-light: #8a7050;
+			--spine: #142614;
+		}
+
+		body {
+			background: var(--cover);
+			background-image:
+				repeating-linear-gradient(
+					0deg,
+					transparent,
+					transparent 3px,
+					rgba(0,0,0,0.03) 3px,
+					rgba(0,0,0,0.03) 4px
+				),
+				repeating-linear-gradient(
+					90deg,
+					transparent,
+					transparent 3px,
+					rgba(0,0,0,0.03) 3px,
+					rgba(0,0,0,0.03) 4px
+				);
+			color: var(--ink);
+			font-family: "EB Garamond", "Georgia", serif;
+			font-size: 17px;
+			line-height: 1.7;
+			min-height: 100vh;
+			display: flex;
+			justify-content: center;
+			align-items: flex-start;
+			padding: 40px 0;
+		}
+
+		/* Open book container */
+		.book {
+			display: flex;
+			max-width: 1100px;
+			width: 100%;
+			box-shadow: 0 20px 80px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.4);
+		}
+
+		/* Spine */
+		.spine {
+			width: 32px;
+			flex-shrink: 0;
+			background: var(--spine);
+			background-image: linear-gradient(90deg,
+				rgba(0,0,0,0.4) 0%,
+				rgba(255,255,255,0.06) 30%,
+				rgba(0,0,0,0.3) 100%
+			);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.spine-text {
+			writing-mode: vertical-rl;
+			text-orientation: mixed;
+			transform: rotate(180deg);
+			font-family: "Playfair Display", serif;
+			font-size: 10px;
+			font-weight: 600;
+			letter-spacing: 0.3em;
+			text-transform: uppercase;
+			color: var(--gold-dim);
+		}
+
+		/* Left page — decorative cover flap */
+		.cover-flap {
+			width: 200px;
+			flex-shrink: 0;
+			background: var(--cover);
+			background-image:
+				linear-gradient(90deg,
+					rgba(0,0,0,0.2) 0%,
+					transparent 40%
+				);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 40px 20px;
+			border-right: 1px solid rgba(201,168,76,0.15);
+		}
+
+		.flap-ornament {
+			width: 80px;
+			height: 80px;
+			border: 2px solid var(--gold-dim);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-bottom: 24px;
+			position: relative;
+		}
+
+		.flap-ornament::before {
+			content: "";
+			position: absolute;
+			inset: 6px;
+			border: 1px solid var(--gold-dim);
+			border-radius: 50%;
+		}
+
+		.flap-ornament-inner {
+			font-family: "Playfair Display", serif;
+			font-size: 28px;
+			font-weight: 700;
+			color: var(--gold-dim);
+		}
+
+		.flap-site {
+			font-family: "Playfair Display", serif;
+			font-size: 12px;
+			font-weight: 400;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+			color: var(--gold-dim);
+			text-align: center;
+			line-height: 1.6;
+		}
+
+		.flap-divider {
+			width: 40px;
+			height: 1px;
+			background: var(--gold-dim);
+			margin: 16px auto;
+		}
+
+		.flap-year {
+			font-family: "EB Garamond", serif;
+			font-size: 13px;
+			color: var(--gold-dim);
+			font-style: italic;
+		}
+
+		/* Right — the actual page */
+		.page {
+			flex: 1;
+			background: var(--paper);
+			background-image:
+				repeating-linear-gradient(
+					0deg,
+					transparent,
+					transparent 26px,
+					rgba(0,0,0,0.03) 26px,
+					rgba(0,0,0,0.03) 27px
+				);
+			padding: 56px 64px 80px 56px;
+			position: relative;
+			min-height: 100vh;
+		}
+
+		/* Left red margin line */
+		.page::before {
+			content: "";
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 44px;
+			width: 1px;
+			background: rgba(150,40,40,0.15);
+		}
+
+		/* Page top ornament */
+		.page-ornament-top {
+			text-align: center;
+			color: var(--gold);
+			font-size: 20px;
+			letter-spacing: 0.3em;
+			margin-bottom: 32px;
+		}
+
+		/* Chapter heading */
+		.chapter-label {
+			text-align: center;
+			font-family: "Playfair Display", serif;
+			font-size: 11px;
+			font-weight: 400;
+			letter-spacing: 0.3em;
+			text-transform: uppercase;
+			color: var(--ink-light);
+			margin-bottom: 8px;
+		}
+
+		.chapter-title {
+			font-family: "Playfair Display", serif;
+			font-size: 32px;
+			font-weight: 700;
+			color: var(--ink);
+			text-align: center;
+			line-height: 1.2;
+			margin-bottom: 8px;
+		}
+
+		.chapter-subtitle {
+			text-align: center;
+			font-style: italic;
+			font-size: 16px;
+			color: var(--ink-dim);
+			margin-bottom: 16px;
+		}
+
+		/* Drop cap ornament divider */
+		.ornament-divider {
+			text-align: center;
+			color: var(--gold);
+			font-size: 16px;
+			letter-spacing: 0.4em;
+			margin: 20px 0 28px;
+		}
+
+		/* Meta */
+		.page-meta {
+			font-size: 13px;
+			color: var(--ink-light);
+			text-align: center;
+			font-style: italic;
+			margin-bottom: 32px;
+			padding-bottom: 20px;
+			border-bottom: 1px solid rgba(201,168,76,0.3);
+		}
+
+		/* Tags */
+		.tags-line {
+			text-align: center;
+			font-size: 12px;
+			color: var(--ink-light);
+			margin-top: -10px;
+			margin-bottom: 32px;
+			letter-spacing: 0.06em;
+		}
+
+		/* Content */
+		.content-area {
+			/* Drop cap on first paragraph */
+		}
+
+		.content-area > p:first-of-type::first-letter {
+			font-family: "Playfair Display", serif;
+			font-size: 4.5em;
+			font-weight: 700;
+			float: left;
+			line-height: 0.75;
+			padding-right: 8px;
+			padding-top: 6px;
+			color: var(--ink);
+		}
+
+		.content-area h1 {
+			font-family: "Playfair Display", serif;
+			font-size: 24px;
+			font-weight: 700;
+			color: var(--ink);
+			margin-top: 40px;
+			margin-bottom: 12px;
+			text-align: center;
+			letter-spacing: 0.02em;
+		}
+
+		.content-area h2 {
+			font-family: "Playfair Display", serif;
+			font-size: 19px;
+			font-weight: 700;
+			font-style: italic;
+			color: var(--ink-dim);
+			margin-top: 32px;
+			margin-bottom: 10px;
+		}
+
+		.content-area h3 {
+			font-size: 16px;
+			font-weight: 600;
+			color: var(--ink-dim);
+			margin-top: 24px;
+			margin-bottom: 8px;
+			font-style: italic;
+		}
+
+		.content-area h4, .content-area h5, .content-area h6 {
+			font-size: 15px;
+			font-weight: 600;
+			color: var(--ink-light);
+			margin-top: 18px;
+			margin-bottom: 6px;
+		}
+
+		.content-area p {
+			font-size: 17px;
+			margin-bottom: 14px;
+			color: var(--ink);
+			text-align: justify;
+			hyphens: auto;
+			line-height: 1.75;
+		}
+
+		.content-area a {
+			color: var(--ink-dim);
+			text-decoration: underline;
+			text-underline-offset: 2px;
+		}
+
+		.content-area code {
+			font-family: "Courier New", monospace;
+			font-size: 14px;
+			background: var(--paper-dark);
+			color: var(--ink-dim);
+			padding: 1px 4px;
+			border-radius: 2px;
+		}
+
+		.content-area pre {
+			background: var(--paper-dark);
+			border-left: 3px solid var(--gold-dim);
+			padding: 14px 18px;
+			margin: 16px 0;
+			overflow-x: auto;
+			font-size: 14px;
+		}
+
+		.content-area pre code {
+			background: none;
+			padding: 0;
+		}
+
+		.content-area blockquote {
+			padding: 12px 24px;
+			margin: 20px 0;
+			font-style: italic;
+			font-size: 18px;
+			color: var(--ink-dim);
+			border-left: 3px solid var(--gold-dim);
+		}
+
+		.content-area ul {
+			margin: 10px 0 16px 28px;
+			color: var(--ink);
+		}
+
+		.content-area ol {
+			margin: 10px 0 16px 32px;
+			color: var(--ink);
+		}
+
+		.content-area li {
+			margin-bottom: 6px;
+			font-size: 17px;
+			line-height: 1.6;
+		}
+
+		.content-area table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 16px auto;
+			font-size: 15px;
+		}
+
+		.content-area th {
+			border-bottom: 2px solid var(--ink-dim);
+			padding: 8px 12px;
+			font-weight: 700;
+			text-align: left;
+			font-family: "Playfair Display", serif;
+			font-size: 14px;
+		}
+
+		.content-area td {
+			padding: 8px 12px;
+			border-bottom: 1px solid rgba(138,112,80,0.2);
+		}
+
+		.content-area img {
+			max-width: 100%;
+			display: block;
+			margin: 16px auto;
+		}
+
+		.content-area hr {
+			border: none;
+			text-align: center;
+			margin: 28px 0;
+			font-size: 18px;
+			color: var(--gold-dim);
+			letter-spacing: 0.4em;
+		}
+
+		.content-area hr::before {
+			content: "* * *";
+		}
+
+		/* Page numbers */
+		.page-footer {
+			margin-top: 40px;
+			padding-top: 12px;
+			border-top: 1px solid rgba(201,168,76,0.25);
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-size: 12px;
+			color: var(--ink-light);
+			font-style: italic;
+		}
+
+		.page-number {
+			font-family: "EB Garamond", serif;
+			font-size: 14px;
+		}
+
+		@media (max-width: 800px) {
+			.cover-flap { display: none; }
+			.page { padding: 36px 24px 48px; }
+			.page::before { left: 20px; }
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="book">
+
+		<div class="spine">
+			<div class="spine-text">{{ config.site.name }}</div>
+		</div>
+
+		<div class="cover-flap">
+			<div class="flap-ornament">
+				<div class="flap-ornament-inner">FF</div>
+			</div>
+			<div class="flap-divider"></div>
+			<div class="flap-site">{{ config.site.name }}</div>
+			<div class="flap-divider"></div>
+			<div class="flap-year">{{ published_date | truncate(4, true, "") }}</div>
+		</div>
+
+		<div class="page">
+
+			<div class="page-ornament-top">&#10048; &#10048; &#10048;</div>
+
+			<div class="chapter-label">{{ config.site.author }}</div>
+			<h1 class="chapter-title">{{ title }}</h1>
+			<div class="ornament-divider">&#8727; &#8727; &#8727;</div>
+
+			<div class="page-meta">
+				{{ published_date }}{% if updated_date %} — Überarbeitet {{ updated_date }}{% endif %} · {{ reading_time }}
+			</div>
+
+			{% if taxonomy.tags %}
+			<div class="tags-line">
+				{% for tag in taxonomy.tags %}{{ tag }}{% if not loop.last %} · {% endif %}{% endfor %}
+			</div>
+			{% endif %}
+
+			<div class="content-area">
+				{{ content | safe }}
+			</div>
+
+			<div class="page-footer">
+				<span>{{ config.site.name }}</span>
+				<span class="page-number">1</span>
+				<span>{{ config.site.author }}</span>
+			</div>
+
+		</div>
+
+	</div>
+
+</body>
+</html>

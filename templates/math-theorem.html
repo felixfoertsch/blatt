@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }} — {{ config.site.name }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Libre+Caslon+Display&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #dcdccc; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--paper: #fffff8;
+			--text: #111111;
+			--muted: #444444;
+			--dim: #777777;
+			--border: #cccccc;
+			--accent: #00369a;
+			--block-bg: #f8f8f4;
+		}
+
+		body {
+			background: #dcdccc;
+			color: var(--text);
+			font-family: "Libre Caslon Text", "Computer Modern", "Latin Modern Math", "Times New Roman", serif;
+			font-size: 16px;
+			line-height: 1.65;
+			min-height: 100vh;
+			padding: 40px 16px;
+		}
+
+		/* Main paper */
+		.paper {
+			background: var(--paper);
+			max-width: 700px;
+			margin: 0 auto;
+			padding: 72px 80px 80px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 32px rgba(0,0,0,0.15);
+		}
+
+		/* Title block */
+		.paper-title {
+			text-align: center;
+			margin-bottom: 48px;
+			padding-bottom: 32px;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.paper-maintitle {
+			font-family: "Libre Caslon Display", "Libre Caslon Text", serif;
+			font-size: 26px;
+			font-weight: 400;
+			color: var(--text);
+			line-height: 1.25;
+			margin-bottom: 20px;
+		}
+
+		.paper-author {
+			font-size: 14px;
+			color: var(--muted);
+			margin-bottom: 6px;
+		}
+
+		.paper-date {
+			font-size: 13px;
+			color: var(--dim);
+			font-style: italic;
+		}
+
+		/* Abstract */
+		.abstract {
+			margin: 0 32px 40px;
+			padding: 0 0 32px;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.abstract-label {
+			font-weight: 700;
+			font-size: 13px;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			text-align: center;
+			margin-bottom: 10px;
+			color: var(--text);
+		}
+
+		.abstract-text {
+			font-size: 14px;
+			font-style: italic;
+			color: var(--muted);
+			text-align: justify;
+			hyphens: auto;
+		}
+
+		/* Section headings */
+		.content-area {
+			counter-reset: section theorem definition lemma;
+		}
+
+		.content-area h1 {
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--text);
+			margin-top: 40px;
+			margin-bottom: 14px;
+			counter-increment: section;
+		}
+
+		.content-area h1::before {
+			content: counter(section) ". ";
+			color: var(--muted);
+		}
+
+		.content-area h2 {
+			font-size: 16px;
+			font-weight: 700;
+			font-style: italic;
+			color: var(--text);
+			margin-top: 28px;
+			margin-bottom: 10px;
+		}
+
+		.content-area h3 {
+			font-size: 15px;
+			font-weight: 700;
+			color: var(--muted);
+			margin-top: 22px;
+			margin-bottom: 8px;
+		}
+
+		.content-area h4, .content-area h5, .content-area h6 {
+			font-size: 14px;
+			font-weight: 700;
+			color: var(--dim);
+			margin-top: 16px;
+			margin-bottom: 6px;
+		}
+
+		.content-area p {
+			margin-bottom: 14px;
+			text-align: justify;
+			hyphens: auto;
+			color: var(--text);
+		}
+
+		.content-area a {
+			color: var(--accent);
+			text-decoration: none;
+		}
+
+		.content-area a:hover {
+			text-decoration: underline;
+		}
+
+		.content-area code {
+			font-family: "Courier New", monospace;
+			font-size: 14px;
+			color: #444;
+			background: #f0f0e8;
+			padding: 1px 4px;
+			border-radius: 2px;
+		}
+
+		.content-area pre {
+			background: var(--block-bg);
+			border: 1px solid var(--border);
+			padding: 14px 18px;
+			margin: 16px 0;
+			overflow-x: auto;
+			font-size: 13px;
+		}
+
+		.content-area pre code {
+			background: none;
+			padding: 0;
+		}
+
+		/* Theorem-style blockquotes */
+		.content-area blockquote {
+			background: var(--block-bg);
+			border-left: 4px solid var(--accent);
+			padding: 16px 20px;
+			margin: 20px 0;
+			font-style: italic;
+			counter-increment: theorem;
+		}
+
+		.content-area blockquote::before {
+			display: block;
+			content: "Theorem " counter(theorem) ".";
+			font-style: normal;
+			font-weight: 700;
+			font-size: 13px;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			color: var(--accent);
+			margin-bottom: 8px;
+		}
+
+		.content-area blockquote p {
+			margin: 0;
+			text-align: left;
+		}
+
+		.content-area ul {
+			margin: 10px 0 16px 28px;
+			color: var(--text);
+		}
+
+		.content-area ol {
+			margin: 10px 0 16px 28px;
+			color: var(--text);
+		}
+
+		.content-area li {
+			margin-bottom: 5px;
+		}
+
+		.content-area table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 16px auto;
+			font-size: 14px;
+		}
+
+		.content-area th {
+			font-weight: 700;
+			padding: 8px 14px;
+			border-bottom: 2px solid var(--text);
+			text-align: center;
+			font-size: 13px;
+		}
+
+		.content-area td {
+			padding: 7px 14px;
+			border-bottom: 1px solid var(--border);
+			text-align: center;
+		}
+
+		.content-area img {
+			max-width: 100%;
+			display: block;
+			margin: 16px auto;
+		}
+
+		.content-area hr {
+			border: none;
+			border-top: 1px solid var(--border);
+			margin: 28px 0;
+		}
+
+		/* Proof block — indented */
+		.proof-block {
+			margin: 16px 0;
+			padding-left: 20px;
+			border-left: 2px solid var(--border);
+		}
+
+		.proof-label {
+			font-style: italic;
+			font-size: 14px;
+			color: var(--muted);
+			margin-bottom: 6px;
+		}
+
+		.qed {
+			display: block;
+			text-align: right;
+			font-size: 18px;
+			color: var(--text);
+			margin-top: 8px;
+		}
+
+		/* Keywords / tags */
+		.keywords {
+			margin-top: 40px;
+			padding-top: 20px;
+			border-top: 1px solid var(--border);
+			font-size: 13px;
+			color: var(--muted);
+		}
+
+		.keywords-label {
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			font-size: 12px;
+			margin-bottom: 6px;
+			color: var(--text);
+		}
+
+		/* Footer */
+		.paper-footer {
+			margin-top: 40px;
+			padding-top: 16px;
+			border-top: 1px solid var(--border);
+			font-size: 12px;
+			color: var(--dim);
+			text-align: center;
+			font-style: italic;
+		}
+
+		@media (max-width: 700px) {
+			.paper { padding: 40px 24px 48px; }
+			.abstract { margin: 0 0 32px; }
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="paper">
+
+		<div class="paper-title">
+			<h1 class="paper-maintitle" style="counter-increment: none;">{{ title }}</h1>
+			<div class="paper-author">{{ config.site.author }}</div>
+			<div class="paper-date">{{ published_date }}{% if updated_date %} (revised {{ updated_date }}){% endif %} · {{ reading_time }}</div>
+			{% if taxonomy.tags %}
+			<div class="paper-date" style="margin-top: 6px;">
+				{% for tag in taxonomy.tags %}{{ tag }}{% if not loop.last %}, {% endif %}{% endfor %}
+			</div>
+			{% endif %}
+		</div>
+
+		<div class="abstract">
+			<div class="abstract-label">Abstract</div>
+			<div class="abstract-text">
+				This paper presents the contents of "{{ title }}" by {{ config.site.author }}, submitted {{ published_date }}. The following sections develop the main arguments and supporting material in a systematic manner.
+			</div>
+		</div>
+
+		<div class="content-area">
+			{{ content | safe }}
+		</div>
+
+		<div class="proof-block">
+			<div class="proof-label">Proof.</div>
+			<p style="font-size: 14px; color: var(--muted);">The assertions above follow directly from the preceding definitions and observations. The reader may verify each claim by inspection.</p>
+			<span class="qed">&#9632;</span>
+		</div>
+
+		{% if taxonomy.tags %}
+		<div class="keywords">
+			<div class="keywords-label">Keywords</div>
+			{% for tag in taxonomy.tags %}{{ tag }}{% if not loop.last %}, {% endif %}{% endfor %}.
+		</div>
+		{% endif %}
+
+		<div class="paper-footer">
+			{{ config.site.name }} · {{ config.site.author }} · {{ published_date }}
+		</div>
+
+	</div>
+
+</body>
+</html>

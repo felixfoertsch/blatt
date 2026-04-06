@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>BIOS — {{ title }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #000000; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			background: #000000;
+			color: #aaaaaa;
+			font-family: "Share Tech Mono", "VT323", "Courier New", monospace;
+			font-size: 14px;
+			line-height: 1.45;
+			min-height: 100vh;
+			overflow-x: hidden;
+		}
+
+		.screen {
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 16px 20px 60px;
+		}
+
+		/* BIOS header */
+		.bios-header {
+			background: #0000aa;
+			color: #ffffff;
+			padding: 8px 12px;
+			margin-bottom: 0;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.bios-header-title {
+			font-family: "VT323", monospace;
+			font-size: 18px;
+			letter-spacing: 0.05em;
+		}
+
+		.bios-header-version {
+			font-size: 13px;
+			color: #ffff55;
+		}
+
+		/* Memory test area */
+		.bios-memory {
+			background: #000;
+			color: #aaa;
+			padding: 8px 12px;
+			margin-bottom: 8px;
+		}
+
+		.bios-memory-bar {
+			height: 14px;
+			background: #0000aa;
+			margin: 4px 0;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.bios-memory-fill {
+			height: 100%;
+			background: #aaaaaa;
+			width: 0%;
+			animation: memtest 2.5s ease-in-out forwards;
+		}
+
+		@keyframes memtest {
+			0%   { width: 0%; }
+			100% { width: 100%; }
+		}
+
+		.bios-memory-label {
+			font-size: 12px;
+			color: #aaa;
+		}
+
+		.ok {
+			color: #55ff55;
+			font-weight: 700;
+		}
+
+		.fail {
+			color: #ff5555;
+		}
+
+		.warn {
+			color: #ffff55;
+		}
+
+		/* Boot sequence */
+		.boot-sequence {
+			padding: 8px 0;
+			margin-bottom: 12px;
+		}
+
+		.boot-line {
+			display: flex;
+			gap: 8px;
+			margin-bottom: 2px;
+			font-size: 13px;
+		}
+
+		.boot-timestamp {
+			color: #555;
+			flex-shrink: 0;
+			width: 60px;
+		}
+
+		.boot-source {
+			color: #0087ff;
+			flex-shrink: 0;
+			width: 120px;
+		}
+
+		.boot-msg {
+			color: #aaaaaa;
+			flex: 1;
+		}
+
+		.boot-status-ok   { color: #55ff55; }
+		.boot-status-warn { color: #ffff55; }
+
+		/* Separator */
+		.separator {
+			color: #333;
+			font-size: 13px;
+			margin: 6px 0;
+			letter-spacing: 0.02em;
+		}
+
+		/* Main content — article is the boot log continuation */
+		.article-header {
+			background: #0000aa;
+			color: #fff;
+			padding: 6px 12px;
+			margin: 16px 0 0;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.article-header-title {
+			font-family: "VT323", monospace;
+			font-size: 18px;
+		}
+
+		.article-header-meta {
+			font-size: 12px;
+			color: #55ffff;
+		}
+
+		.article-meta-line {
+			background: #000080;
+			color: #ffff55;
+			padding: 4px 12px;
+			font-size: 12px;
+			display: flex;
+			gap: 24px;
+			flex-wrap: wrap;
+		}
+
+		.content-area {
+			padding: 14px 12px;
+			border: 1px solid #333;
+			margin-bottom: 16px;
+		}
+
+		.content-area h1 {
+			font-family: "VT323", monospace;
+			font-size: 22px;
+			color: #ffff55;
+			margin-top: 20px;
+			margin-bottom: 8px;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+		}
+
+		.content-area h1::before {
+			content: ">> ";
+			color: #55ff55;
+		}
+
+		.content-area h2 {
+			font-family: "VT323", monospace;
+			font-size: 18px;
+			color: #55ffff;
+			margin-top: 16px;
+			margin-bottom: 6px;
+			text-transform: uppercase;
+		}
+
+		.content-area h2::before {
+			content: "> ";
+			color: #555;
+		}
+
+		.content-area h3 {
+			font-size: 14px;
+			color: #ff5555;
+			margin-top: 14px;
+			margin-bottom: 5px;
+		}
+
+		.content-area h4, .content-area h5, .content-area h6 {
+			font-size: 13px;
+			color: #aaaaaa;
+			margin-top: 10px;
+			margin-bottom: 4px;
+		}
+
+		.content-area p {
+			color: #cccccc;
+			margin-bottom: 10px;
+			line-height: 1.55;
+		}
+
+		.content-area a {
+			color: #55ffff;
+			text-decoration: underline;
+		}
+
+		.content-area code {
+			color: #ffff55;
+			background: rgba(255,255,0,0.07);
+			padding: 1px 4px;
+			border: 1px solid rgba(255,255,0,0.2);
+		}
+
+		.content-area pre {
+			background: #0a0a0a;
+			border: 1px solid #333;
+			padding: 10px 12px;
+			margin: 10px 0;
+			overflow-x: auto;
+		}
+
+		.content-area pre code {
+			background: none;
+			border: none;
+			padding: 0;
+			color: #55ff55;
+		}
+
+		.content-area blockquote {
+			border-left: 2px solid #0000aa;
+			padding: 6px 12px;
+			margin: 10px 0;
+			background: rgba(0,0,170,0.1);
+			color: #55ffff;
+		}
+
+		.content-area blockquote p {
+			color: #55ffff;
+		}
+
+		.content-area ul {
+			margin: 6px 0 10px 0;
+			list-style: none;
+			padding: 0;
+		}
+
+		.content-area ul li {
+			padding-left: 20px;
+			margin-bottom: 3px;
+			color: #cccccc;
+			position: relative;
+		}
+
+		.content-area ul li::before {
+			content: "*";
+			position: absolute;
+			left: 6px;
+			color: #55ff55;
+		}
+
+		.content-area ol {
+			margin: 6px 0 10px 0;
+			list-style: none;
+			padding: 0;
+			counter-reset: bios-list;
+		}
+
+		.content-area ol li {
+			counter-increment: bios-list;
+			padding-left: 28px;
+			margin-bottom: 3px;
+			color: #cccccc;
+			position: relative;
+		}
+
+		.content-area ol li::before {
+			content: "[" counter(bios-list) "]";
+			position: absolute;
+			left: 0;
+			color: #ffff55;
+		}
+
+		.content-area table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 10px 0;
+			font-size: 12px;
+		}
+
+		.content-area th {
+			background: #0000aa;
+			color: #fff;
+			padding: 5px 10px;
+			text-align: left;
+			font-size: 11px;
+			text-transform: uppercase;
+		}
+
+		.content-area td {
+			padding: 5px 10px;
+			border: 1px solid #333;
+			color: #aaaaaa;
+		}
+
+		.content-area img {
+			max-width: 100%;
+			filter: grayscale(100%) contrast(1.2);
+			border: 1px solid #555;
+			margin: 8px 0;
+		}
+
+		.content-area hr {
+			border: none;
+			border-top: 1px solid #333;
+			margin: 14px 0;
+		}
+
+		/* Tags */
+		.bios-tags {
+			background: #001100;
+			border: 1px solid #333;
+			padding: 6px 12px;
+			font-size: 12px;
+			color: #55ff55;
+			margin-bottom: 8px;
+		}
+
+		/* Footer bar */
+		.bios-footer {
+			background: #0000aa;
+			color: #fff;
+			padding: 5px 12px;
+			display: flex;
+			justify-content: space-between;
+			font-size: 12px;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		.bios-key {
+			background: #aaa;
+			color: #000;
+			padding: 1px 5px;
+			font-size: 11px;
+			margin-right: 4px;
+		}
+
+		/* Blinking cursor */
+		.cursor {
+			display: inline-block;
+			width: 8px;
+			height: 14px;
+			background: #aaaaaa;
+			vertical-align: middle;
+			animation: blink 1s step-end infinite;
+		}
+
+		@keyframes blink {
+			0%, 100% { opacity: 1; }
+			50%       { opacity: 0; }
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="screen">
+
+		<div class="bios-header">
+			<div class="bios-header-title">Felix's Blatt Server v2026.04 — BIOS Setup</div>
+			<div class="bios-header-version">Build {{ published_date | replace("-", "") }}</div>
+		</div>
+
+		<div class="bios-memory">
+			<div class="bios-memory-label">Memory Test:</div>
+			<div class="bios-memory-bar"><div class="bios-memory-fill"></div></div>
+			<div>640 KB Base Memory   <span class="ok">OK</span></div>
+			<div>65536 KB Extended Memory   <span class="ok">OK</span></div>
+		</div>
+
+		<div class="separator">────────────────────────────────────────────────────────────────────────────────</div>
+
+		<div class="boot-sequence">
+			<div class="boot-line">
+				<span class="boot-timestamp">[0.000000]</span>
+				<span class="boot-source">KERNEL:</span>
+				<span class="boot-msg">Initializing Blatt content server</span>
+			</div>
+			<div class="boot-line">
+				<span class="boot-timestamp">[0.001234]</span>
+				<span class="boot-source">MARKDOWN:</span>
+				<span class="boot-msg">Parser loaded, CommonMark extensions enabled <span class="boot-status-ok">[OK]</span></span>
+			</div>
+			<div class="boot-line">
+				<span class="boot-timestamp">[0.002841]</span>
+				<span class="boot-source">KATEX:</span>
+				<span class="boot-msg">Math renderer initialized <span class="boot-status-ok">[OK]</span></span>
+			</div>
+			<div class="boot-line">
+				<span class="boot-timestamp">[0.004100]</span>
+				<span class="boot-source">TEMPLATE:</span>
+				<span class="boot-msg">Loading bootscreen.html <span class="boot-status-ok">[OK]</span></span>
+			</div>
+			<div class="boot-line">
+				<span class="boot-timestamp">[0.005500]</span>
+				<span class="boot-source">NUNJUCKS:</span>
+				<span class="boot-msg">Template engine ready <span class="boot-status-ok">[OK]</span></span>
+			</div>
+			<div class="boot-line">
+				<span class="boot-timestamp">[0.007200]</span>
+				<span class="boot-source">CONTENT:</span>
+				<span class="boot-msg">Loading post: {{ title }}</span>
+			</div>
+			<div class="boot-line">
+				<span class="boot-timestamp">[0.008100]</span>
+				<span class="boot-source">META:</span>
+				<span class="boot-msg">author={{ config.site.author }} date={{ published_date }} read={{ reading_time }}</span>
+			</div>
+			{% if taxonomy.tags %}
+			<div class="boot-line">
+				<span class="boot-timestamp">[0.008500]</span>
+				<span class="boot-source">TAGS:</span>
+				<span class="boot-msg">{% for tag in taxonomy.tags %}{{ tag }}{% if not loop.last %}, {% endif %}{% endfor %}</span>
+			</div>
+			{% endif %}
+			<div class="boot-line">
+				<span class="boot-timestamp">[0.009800]</span>
+				<span class="boot-source">RENDER:</span>
+				<span class="boot-msg">Content rendered to HTML <span class="boot-status-ok">[OK]</span></span>
+			</div>
+			<div class="boot-line">
+				<span class="boot-timestamp">[0.010200]</span>
+				<span class="boot-source">SYSTEM:</span>
+				<span class="boot-msg">Boot complete. Serving content.</span>
+			</div>
+		</div>
+
+		<div class="separator">────────────────────────────────────────────────────────────────────────────────</div>
+
+		<div class="article-header">
+			<div class="article-header-title">{{ title }}</div>
+			<div class="article-header-meta">{{ published_date }}</div>
+		</div>
+
+		<div class="article-meta-line">
+			<span>AUTHOR: {{ config.site.author }}</span>
+			<span>DATE: {{ published_date }}</span>
+			<span>READ: {{ reading_time }}</span>
+			{% if updated_date %}<span>UPDATED: {{ updated_date }}</span>{% endif %}
+		</div>
+
+		{% if taxonomy.tags %}
+		<div class="bios-tags">
+			TAGS: {% for tag in taxonomy.tags %}[{{ tag }}]{% if not loop.last %} {% endif %}{% endfor %}
+		</div>
+		{% endif %}
+
+		<div class="content-area">
+			{{ content | safe }}
+			<div style="margin-top: 16px; color: #555;">
+				<span class="cursor"></span>
+			</div>
+		</div>
+
+		<div class="bios-footer">
+			<span><span class="bios-key">F1</span> Help  <span class="bios-key">F5</span> Defaults  <span class="bios-key">F10</span> Save</span>
+			<span>{{ config.site.name }} · {{ config.site.author }}</span>
+			<span>Press <span class="bios-key">F12</span> for boot menu</span>
+		</div>
+
+	</div>
+
+</body>
+</html>

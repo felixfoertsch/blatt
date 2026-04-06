@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #000000; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--void: #000000;
+			--white: #ffffff;
+			--dim: rgba(255,255,255,0.35);
+			--faint: rgba(255,255,255,0.12);
+		}
+
+		html, body {
+			height: 100%;
+		}
+
+		body {
+			background: var(--void);
+			color: var(--white);
+			font-family: "Space Mono", "Courier New", monospace;
+			font-size: 14px;
+			line-height: 1.75;
+			min-height: 100vh;
+			position: relative;
+			overflow-x: hidden;
+		}
+
+		/* Single vertical line */
+		.vertical-line {
+			position: fixed;
+			top: 0;
+			bottom: 0;
+			left: 60px;
+			width: 1px;
+			background: var(--faint);
+			z-index: 0;
+		}
+
+		.page {
+			position: relative;
+			z-index: 1;
+			min-height: 100vh;
+			display: grid;
+			grid-template-rows: auto 1fr auto;
+		}
+
+		/* Oppressive title block */
+		.title-block {
+			padding: 80px 80px 0 100px;
+			max-width: 100vw;
+			overflow: hidden;
+		}
+
+		.site-whisper {
+			font-size: 11px;
+			color: var(--dim);
+			letter-spacing: 0.3em;
+			text-transform: uppercase;
+			margin-bottom: 40px;
+			padding-left: 2px;
+		}
+
+		.main-title {
+			font-size: clamp(48px, 8vw, 120px);
+			font-weight: 700;
+			line-height: 0.9;
+			color: var(--white);
+			letter-spacing: -0.03em;
+			word-break: break-word;
+			margin-left: -4px;
+		}
+
+		/* The title pushes right and nearly off the edge */
+		.main-title-inner {
+			display: block;
+		}
+
+		.title-meta {
+			margin-top: 48px;
+			padding-bottom: 40px;
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+
+		.title-meta span {
+			font-size: 11px;
+			color: var(--dim);
+			letter-spacing: 0.15em;
+			text-transform: uppercase;
+		}
+
+		/* Content area — pushed right, away from the line */
+		.content-wrapper {
+			padding: 60px 80px 0 100px;
+			max-width: 720px;
+		}
+
+		.content-area {
+			font-size: 14px;
+			line-height: 1.8;
+		}
+
+		.content-area h1 {
+			font-size: 22px;
+			font-weight: 700;
+			margin-top: 64px;
+			margin-bottom: 20px;
+			letter-spacing: -0.02em;
+		}
+
+		.content-area h2 {
+			font-size: 16px;
+			font-weight: 700;
+			margin-top: 48px;
+			margin-bottom: 16px;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			color: var(--dim);
+		}
+
+		.content-area h3 {
+			font-size: 14px;
+			font-weight: 700;
+			margin-top: 36px;
+			margin-bottom: 12px;
+			color: var(--dim);
+		}
+
+		.content-area p {
+			margin-bottom: 22px;
+			color: rgba(255,255,255,0.88);
+		}
+
+		.content-area a {
+			color: var(--white);
+			text-decoration: none;
+			border-bottom: 1px solid var(--dim);
+		}
+
+		.content-area a:hover {
+			border-bottom-color: var(--white);
+		}
+
+		.content-area code {
+			font-family: "Space Mono", monospace;
+			font-size: 12px;
+			background: rgba(255,255,255,0.06);
+			padding: 1px 6px;
+			border: 1px solid var(--faint);
+		}
+
+		.content-area pre {
+			background: rgba(255,255,255,0.03);
+			border: 1px solid var(--faint);
+			padding: 20px 22px;
+			margin: 24px 0;
+			overflow-x: auto;
+		}
+
+		.content-area pre code {
+			background: none;
+			border: none;
+			padding: 0;
+			color: rgba(255,255,255,0.75);
+		}
+
+		.content-area blockquote {
+			border-left: 1px solid var(--dim);
+			padding-left: 20px;
+			margin: 24px 0;
+			color: var(--dim);
+		}
+
+		.content-area ul,
+		.content-area ol {
+			margin: 14px 0 20px 20px;
+		}
+
+		.content-area li {
+			margin-bottom: 6px;
+			color: rgba(255,255,255,0.88);
+		}
+
+		.content-area ul li::marker {
+			color: var(--dim);
+		}
+
+		.content-area ol li::marker {
+			color: var(--dim);
+		}
+
+		.content-area table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 24px 0;
+			font-size: 13px;
+		}
+
+		.content-area th {
+			border-bottom: 1px solid var(--white);
+			padding: 8px 12px;
+			text-align: left;
+			font-size: 11px;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			color: var(--dim);
+		}
+
+		.content-area td {
+			border-bottom: 1px solid var(--faint);
+			padding: 8px 12px;
+		}
+
+		.content-area img {
+			max-width: 100%;
+			display: block;
+			filter: grayscale(100%) contrast(1.1);
+			margin: 28px 0;
+		}
+
+		.content-area hr {
+			border: none;
+			border-top: 1px solid var(--faint);
+			margin: 36px 0;
+		}
+
+		/* Footer — sparse */
+		.page-footer {
+			padding: 80px 80px 48px 100px;
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+
+		.page-footer span {
+			font-size: 11px;
+			color: var(--faint);
+			letter-spacing: 0.15em;
+			text-transform: uppercase;
+		}
+
+		@media (max-width: 600px) {
+			.title-block,
+			.content-wrapper,
+			.page-footer {
+				padding-left: 28px;
+				padding-right: 28px;
+			}
+
+			.vertical-line {
+				left: 14px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="vertical-line"></div>
+
+	<div class="page">
+		<div class="title-block">
+			<div class="site-whisper">{{ config.site.name }}</div>
+			<h1 class="main-title">
+				<span class="main-title-inner">{{ title }}</span>
+			</h1>
+			<div class="title-meta">
+				<span>{{ config.site.author }}</span>
+				<span>{{ published_date }}</span>
+				<span>{{ reading_time }}</span>
+				{% if taxonomy.tags %}
+				<span>
+					{% for tag in taxonomy.tags %}{{ tag }}{% if not loop.last %} / {% endif %}{% endfor %}
+				</span>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="content-wrapper">
+			<div class="content-area">
+				{{ content | safe }}
+			</div>
+		</div>
+
+		<footer class="page-footer">
+			<span>{{ config.site.name }}</span>
+			<span>{{ published_date }}</span>
+		</footer>
+	</div>
+
+</body>
+</html>

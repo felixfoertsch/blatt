@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }} — {{ config.site.name }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Special+Elite&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #7a6a50; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--envelope: #f0ebe0;
+			--paper: #faf8f3;
+			--ink: #2a1f0e;
+			--ink-dim: #6b5a3e;
+			--red: #c0392b;
+			--blue-stamp: #1a3a6e;
+			--border: #c8b99a;
+		}
+
+		body {
+			background: #7a6a50;
+			min-height: 100vh;
+			padding: 40px 16px 60px;
+			font-family: "EB Garamond", "Georgia", serif;
+			color: var(--ink);
+		}
+
+		/* Envelope container */
+		.envelope {
+			max-width: 760px;
+			margin: 0 auto;
+			background: var(--envelope);
+			position: relative;
+			box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 12px 48px rgba(0,0,0,0.25);
+		}
+
+		/* Airmail border top */
+		.airmail-border-top {
+			height: 14px;
+			background: repeating-linear-gradient(
+				90deg,
+				var(--red) 0px,
+				var(--red) 14px,
+				#fff 14px,
+				#fff 28px,
+				#1a3a6e 28px,
+				#1a3a6e 42px,
+				#fff 42px,
+				#fff 56px
+			);
+		}
+
+		/* Envelope V-flap (CSS triangle at bottom) */
+		.envelope-inner {
+			position: relative;
+			padding: 28px 36px 0;
+		}
+
+		/* Postmark circle over title area */
+		.postmark {
+			position: absolute;
+			top: 28px;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 110px;
+			height: 110px;
+			border: 2px solid var(--ink-dim);
+			border-radius: 50%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			opacity: 0.35;
+			pointer-events: none;
+			z-index: 10;
+		}
+
+		.postmark-top {
+			font-family: "Special Elite", monospace;
+			font-size: 9px;
+			letter-spacing: 0.18em;
+			text-transform: uppercase;
+			color: var(--ink);
+		}
+
+		.postmark-date {
+			font-size: 14px;
+			font-weight: 700;
+			color: var(--ink);
+			line-height: 1.2;
+			text-align: center;
+			font-family: "Special Elite", monospace;
+		}
+
+		.postmark-bottom {
+			font-family: "Special Elite", monospace;
+			font-size: 8px;
+			letter-spacing: 0.15em;
+			text-transform: uppercase;
+			color: var(--ink);
+		}
+
+		/* Stamp */
+		.stamp-area {
+			position: absolute;
+			top: 28px;
+			right: 36px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 4px;
+		}
+
+		.stamp {
+			width: 64px;
+			height: 80px;
+			background: var(--blue-stamp);
+			border: 3px solid #eee;
+			outline: 2px dashed rgba(255,255,255,0.4);
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+		}
+
+		/* Perforations */
+		.stamp::before {
+			content: "";
+			position: absolute;
+			inset: -5px;
+			border: 5px dashed #fff;
+		}
+
+		.stamp-flag {
+			font-size: 24px;
+			color: #fff;
+			line-height: 1;
+			margin-bottom: 3px;
+		}
+
+		.stamp-value {
+			font-family: "Special Elite", monospace;
+			font-size: 10px;
+			color: rgba(255,255,255,0.9);
+			letter-spacing: 0.08em;
+		}
+
+		.stamp-name {
+			font-size: 8px;
+			font-family: "Special Elite", monospace;
+			text-align: center;
+			color: rgba(255,255,255,0.7);
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+		}
+
+		/* Address block */
+		.address-area {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 24px;
+			padding: 20px 0 24px;
+			border-bottom: 1px dashed var(--border);
+			margin-bottom: 28px;
+		}
+
+		.address-block {
+			font-size: 14px;
+			color: var(--ink-dim);
+			line-height: 1.8;
+		}
+
+		.address-label {
+			font-size: 10px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.14em;
+			color: var(--ink-dim);
+			margin-bottom: 4px;
+		}
+
+		.address-name {
+			font-size: 16px;
+			font-weight: 700;
+			color: var(--ink);
+			margin-bottom: 2px;
+		}
+
+		/* Letter / paper section */
+		.letter {
+			background: var(--paper);
+			margin: 0 -36px;
+			padding: 40px 52px 52px;
+			border-top: 1px solid var(--border);
+			box-shadow: inset 0 4px 12px rgba(0,0,0,0.05);
+			background-image:
+				repeating-linear-gradient(
+					0deg,
+					transparent,
+					transparent 27px,
+					rgba(0,0,0,0.04) 27px,
+					rgba(0,0,0,0.04) 28px
+				);
+		}
+
+		.letter-date {
+			text-align: right;
+			font-size: 14px;
+			font-style: italic;
+			color: var(--ink-dim);
+			margin-bottom: 20px;
+		}
+
+		.letter-salutation {
+			font-size: 17px;
+			color: var(--ink);
+			margin-bottom: 16px;
+		}
+
+		.letter-title {
+			font-size: 26px;
+			font-weight: 700;
+			color: var(--ink);
+			line-height: 1.2;
+			margin-bottom: 24px;
+			font-style: italic;
+		}
+
+		/* Content styles */
+		.content-area h1 {
+			font-size: 22px;
+			font-weight: 700;
+			font-style: italic;
+			color: var(--ink);
+			margin-top: 32px;
+			margin-bottom: 10px;
+		}
+
+		.content-area h2 {
+			font-size: 18px;
+			font-weight: 700;
+			color: var(--ink);
+			margin-top: 24px;
+			margin-bottom: 8px;
+			text-decoration: underline;
+			text-underline-offset: 3px;
+		}
+
+		.content-area h3 {
+			font-size: 16px;
+			font-weight: 700;
+			color: var(--ink-dim);
+			margin-top: 20px;
+			margin-bottom: 6px;
+		}
+
+		.content-area h4, .content-area h5, .content-area h6 {
+			font-size: 15px;
+			font-weight: 700;
+			color: var(--ink-dim);
+			margin-top: 16px;
+			margin-bottom: 5px;
+		}
+
+		.content-area p {
+			font-size: 17px;
+			margin-bottom: 16px;
+			color: var(--ink);
+			text-align: justify;
+			hyphens: auto;
+			line-height: 1.7;
+		}
+
+		.content-area a {
+			color: var(--blue-stamp);
+			text-decoration: underline;
+		}
+
+		.content-area code {
+			font-family: "Special Elite", monospace;
+			font-size: 14px;
+			background: rgba(0,0,0,0.05);
+			padding: 1px 4px;
+		}
+
+		.content-area pre {
+			background: rgba(0,0,0,0.04);
+			border-left: 3px solid var(--border);
+			padding: 12px 16px;
+			margin: 14px 0;
+			overflow-x: auto;
+			font-size: 14px;
+		}
+
+		.content-area pre code {
+			background: none;
+			padding: 0;
+		}
+
+		.content-area blockquote {
+			border-left: 3px solid var(--ink-dim);
+			padding: 8px 18px;
+			margin: 14px 0;
+			font-style: italic;
+			color: var(--ink-dim);
+		}
+
+		.content-area ul {
+			margin: 10px 0 16px 24px;
+			color: var(--ink);
+		}
+
+		.content-area ol {
+			margin: 10px 0 16px 28px;
+			color: var(--ink);
+		}
+
+		.content-area li {
+			margin-bottom: 6px;
+			font-size: 16px;
+			line-height: 1.6;
+		}
+
+		.content-area table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 14px 0;
+			font-size: 15px;
+		}
+
+		.content-area th {
+			border-bottom: 2px solid var(--ink);
+			padding: 7px 12px;
+			font-weight: 700;
+			text-align: left;
+		}
+
+		.content-area td {
+			border-bottom: 1px solid var(--border);
+			padding: 7px 12px;
+		}
+
+		.content-area img {
+			max-width: 100%;
+			margin: 12px 0;
+		}
+
+		.content-area hr {
+			border: none;
+			text-align: center;
+			margin: 24px 0;
+			color: var(--ink-dim);
+			font-size: 20px;
+			letter-spacing: 0.4em;
+		}
+
+		.content-area hr::before {
+			content: "* * *";
+		}
+
+		/* Sign-off */
+		.letter-signoff {
+			margin-top: 36px;
+			padding-top: 8px;
+		}
+
+		.signoff-farewell {
+			font-size: 17px;
+			color: var(--ink);
+			margin-bottom: 24px;
+			font-style: italic;
+		}
+
+		.signoff-signature {
+			font-size: 22px;
+			color: var(--ink);
+			font-style: italic;
+		}
+
+		.signoff-site {
+			font-size: 13px;
+			color: var(--ink-dim);
+			margin-top: 4px;
+		}
+
+		/* Tags at bottom */
+		.letter-tags {
+			margin-top: 20px;
+			padding-top: 16px;
+			border-top: 1px dashed var(--border);
+			font-size: 12px;
+			color: var(--ink-dim);
+		}
+
+		/* Airmail border bottom */
+		.airmail-border-bottom {
+			height: 14px;
+			background: repeating-linear-gradient(
+				90deg,
+				#1a3a6e 0px,
+				#1a3a6e 14px,
+				#fff 14px,
+				#fff 28px,
+				var(--red) 28px,
+				var(--red) 42px,
+				#fff 42px,
+				#fff 56px
+			);
+		}
+
+		@media (max-width: 600px) {
+			.envelope-inner { padding: 20px 20px 0; }
+			.letter { margin: 0 -20px; padding: 28px 24px 36px; }
+			.address-area { grid-template-columns: 1fr; }
+			.stamp-area { right: 20px; }
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="envelope">
+		<div class="airmail-border-top"></div>
+
+		<div class="envelope-inner">
+
+			<div class="postmark">
+				<div class="postmark-top">{{ config.site.name }}</div>
+				<div class="postmark-date">{{ published_date | replace("-", "\A") }}</div>
+				<div class="postmark-bottom">Germany</div>
+			</div>
+
+			<div class="stamp-area">
+				<div class="stamp">
+					<div class="stamp-flag">DE</div>
+					<div class="stamp-value">€0.85</div>
+					<div class="stamp-name">Brief</div>
+				</div>
+			</div>
+
+			<div class="address-area">
+				<div class="address-block">
+					<div class="address-label">From</div>
+					<div class="address-name">{{ config.site.author }}</div>
+					<div>{{ config.site.name }}</div>
+					<div>{{ published_date }}</div>
+				</div>
+				<div class="address-block">
+					<div class="address-label">To</div>
+					<div class="address-name">Dear Reader</div>
+					<div>Wherever You Are</div>
+					<div>World</div>
+				</div>
+			</div>
+
+			<div class="letter">
+				<div class="letter-date">{{ published_date }}</div>
+				<div class="letter-salutation">Dear Reader,</div>
+				<div class="letter-title">Re: {{ title }}</div>
+
+				<div class="content-area">
+					{{ content | safe }}
+				</div>
+
+				<div class="letter-signoff">
+					<div class="signoff-farewell">With warm regards,</div>
+					<div class="signoff-signature">{{ config.site.author }}</div>
+					<div class="signoff-site">{{ config.site.name }}</div>
+				</div>
+
+				{% if taxonomy.tags %}
+				<div class="letter-tags">
+					P.S. Tags: {% for tag in taxonomy.tags %}{{ tag }}{% if not loop.last %}, {% endif %}{% endfor %} · {{ reading_time }}
+				</div>
+				{% endif %}
+			</div>
+
+		</div>
+		<div class="airmail-border-bottom"></div>
+	</div>
+
+</body>
+</html>

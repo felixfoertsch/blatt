@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 	<title>{% block title %}{{ title }}{% endblock %}</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 	{{ meta_tags | safe }}
@@ -22,12 +22,19 @@
 			--color-callout-danger: #fef2f2;
 			font-size: 16px;
 		}
+		html {
+			background: var(--color-bg);
+		}
 		body {
 			margin: 0;
 			font-family: Georgia, 'Times New Roman', serif;
 			background: var(--color-bg);
 			color: var(--color-text);
 			line-height: 1.7;
+			padding-top: env(safe-area-inset-top);
+			padding-left: env(safe-area-inset-left);
+			padding-right: env(safe-area-inset-right);
+			padding-bottom: env(safe-area-inset-bottom);
 		}
 		.site-header {
 			border-bottom: 1px solid var(--color-border);

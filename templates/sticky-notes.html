@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }} — {{ config.site.name }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #f1ece3; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--yellow: #fef08a;
+			--yellow-dark: #f59e0b;
+			--pink: #fda4af;
+			--pink-dark: #e11d48;
+			--blue: #bfdbfe;
+			--blue-dark: #2563eb;
+			--green: #bbf7d0;
+			--green-dark: #16a34a;
+			--orange: #fed7aa;
+			--orange-dark: #ea580c;
+			--bg: #f1ece3;
+		}
+
+		body {
+			background: var(--bg);
+			background-image:
+				linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+				linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+			background-size: 32px 32px;
+			color: #1a1a1a;
+			font-family: "Kalam", "Caveat", cursive;
+			font-size: 16px;
+			line-height: 1.5;
+			min-height: 100vh;
+			padding: 40px 16px 80px;
+		}
+
+		.board {
+			max-width: 900px;
+			margin: 0 auto;
+			position: relative;
+		}
+
+		/* Pin at top of title note */
+		.note::before {
+			content: "";
+			position: absolute;
+			top: -8px;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 12px;
+			height: 12px;
+			background: radial-gradient(circle at 40% 35%, #888, #222);
+			border-radius: 50%;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+			z-index: 10;
+		}
+
+		/* Base note style */
+		.note {
+			position: relative;
+			padding: 24px 20px 20px;
+			box-shadow:
+				2px 2px 8px rgba(0,0,0,0.12),
+				4px 6px 20px rgba(0,0,0,0.1);
+		}
+
+		/* Title note — big yellow, centered */
+		.note-title {
+			background: var(--yellow);
+			max-width: 480px;
+			margin: 0 auto 40px;
+			transform: rotate(-0.8deg);
+		}
+
+		.note-title .note-heading {
+			font-family: "Caveat", cursive;
+			font-size: 32px;
+			font-weight: 700;
+			color: #78350f;
+			text-align: center;
+			line-height: 1.2;
+			margin-bottom: 12px;
+		}
+
+		.note-title .note-meta {
+			font-size: 15px;
+			color: #92400e;
+			text-align: center;
+		}
+
+		/* Meta strip */
+		.meta-strip {
+			display: flex;
+			gap: 16px;
+			justify-content: center;
+			flex-wrap: wrap;
+			margin-bottom: 48px;
+		}
+
+		.meta-note {
+			background: var(--blue);
+			padding: 10px 18px;
+			transform: rotate(1.2deg);
+			font-size: 14px;
+			font-weight: 600;
+			color: #1e40af;
+			box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+		}
+
+		.meta-note:nth-child(2) {
+			background: var(--green);
+			color: #14532d;
+			transform: rotate(-0.8deg);
+		}
+
+		.meta-note:nth-child(3) {
+			background: var(--orange);
+			color: #7c2d12;
+			transform: rotate(1.5deg);
+		}
+
+		/* Tags as small sticky notes */
+		.tags-area {
+			display: flex;
+			gap: 12px;
+			flex-wrap: wrap;
+			justify-content: center;
+			margin-bottom: 48px;
+		}
+
+		.tag-note {
+			background: var(--pink);
+			padding: 7px 14px;
+			font-size: 13px;
+			font-weight: 600;
+			color: var(--pink-dark);
+			box-shadow: 1px 2px 6px rgba(0,0,0,0.1);
+			position: relative;
+		}
+
+		.tag-note:nth-child(2n) { transform: rotate(-1.2deg); background: var(--yellow); color: var(--yellow-dark); }
+		.tag-note:nth-child(3n) { transform: rotate(0.8deg);  background: var(--blue);   color: var(--blue-dark); }
+		.tag-note:nth-child(4n) { transform: rotate(-1.8deg); background: var(--green);  color: var(--green-dark); }
+		.tag-note::before { display: none; }
+
+		/* Content grid */
+		.content-grid {
+			columns: 2;
+			column-gap: 24px;
+		}
+
+		@media (max-width: 600px) {
+			.content-grid { columns: 1; }
+		}
+
+		/* Content area — each block gets a note style */
+		.content-area {
+			break-inside: avoid;
+			margin-bottom: 24px;
+		}
+
+		.content-area > * {
+			break-inside: avoid;
+		}
+
+		/* Individual content-element wrappers */
+		.sticky-block {
+			break-inside: avoid;
+			margin-bottom: 24px;
+			position: relative;
+			padding: 20px 18px 18px;
+			box-shadow: 2px 2px 8px rgba(0,0,0,0.12), 4px 6px 20px rgba(0,0,0,0.08);
+		}
+
+		.sticky-block::before {
+			content: "";
+			position: absolute;
+			top: -6px;
+			left: 50%;
+			transform: translateX(-50%);
+			width: 10px;
+			height: 10px;
+			background: radial-gradient(circle at 40% 35%, #888, #333);
+			border-radius: 50%;
+			box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+		}
+
+		/* Rotate and color cycling */
+		.sticky-block:nth-child(1)  { background: var(--yellow); transform: rotate(-0.5deg); }
+		.sticky-block:nth-child(2)  { background: var(--pink);   transform: rotate(1.2deg); }
+		.sticky-block:nth-child(3)  { background: var(--blue);   transform: rotate(-0.8deg); }
+		.sticky-block:nth-child(4)  { background: var(--green);  transform: rotate(0.6deg); }
+		.sticky-block:nth-child(5)  { background: var(--orange); transform: rotate(-1.1deg); }
+		.sticky-block:nth-child(6)  { background: var(--yellow); transform: rotate(0.9deg); }
+		.sticky-block:nth-child(7)  { background: var(--pink);   transform: rotate(-0.4deg); }
+		.sticky-block:nth-child(8)  { background: var(--blue);   transform: rotate(1.3deg); }
+		.sticky-block:nth-child(9)  { background: var(--green);  transform: rotate(-0.7deg); }
+		.sticky-block:nth-child(10) { background: var(--orange); transform: rotate(0.5deg); }
+		.sticky-block:nth-child(11) { background: var(--yellow); transform: rotate(-1.2deg); }
+		.sticky-block:nth-child(12) { background: var(--pink);   transform: rotate(0.8deg); }
+
+		/* Typography inside notes */
+		.sticky-block h1, .sticky-block h2, .sticky-block h3,
+		.sticky-block h4, .sticky-block h5, .sticky-block h6 {
+			font-family: "Caveat", cursive;
+			font-weight: 700;
+			margin-bottom: 8px;
+			line-height: 1.2;
+		}
+
+		.sticky-block h1 { font-size: 24px; }
+		.sticky-block h2 { font-size: 20px; }
+		.sticky-block h3 { font-size: 18px; }
+		.sticky-block h4, .sticky-block h5, .sticky-block h6 { font-size: 16px; }
+
+		.sticky-block p {
+			font-size: 15px;
+			margin-bottom: 8px;
+			line-height: 1.55;
+		}
+
+		.sticky-block a {
+			color: #1e40af;
+			text-decoration: underline;
+		}
+
+		.sticky-block code {
+			font-family: "Courier New", monospace;
+			font-size: 13px;
+			background: rgba(0,0,0,0.08);
+			padding: 1px 4px;
+			border-radius: 3px;
+		}
+
+		.sticky-block pre {
+			background: rgba(0,0,0,0.08);
+			padding: 10px 12px;
+			margin: 8px 0;
+			overflow-x: auto;
+			border-radius: 4px;
+			font-size: 12px;
+		}
+
+		.sticky-block pre code {
+			background: none;
+			padding: 0;
+		}
+
+		.sticky-block blockquote {
+			border-left: 3px solid rgba(0,0,0,0.2);
+			padding: 6px 12px;
+			margin: 8px 0;
+			font-style: italic;
+			opacity: 0.8;
+		}
+
+		.sticky-block ul {
+			margin: 6px 0 8px 18px;
+		}
+
+		.sticky-block ol {
+			margin: 6px 0 8px 22px;
+		}
+
+		.sticky-block li {
+			margin-bottom: 4px;
+			font-size: 15px;
+		}
+
+		.sticky-block table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 8px 0;
+			font-size: 13px;
+		}
+
+		.sticky-block th {
+			font-weight: 700;
+			padding: 5px 8px;
+			border-bottom: 2px solid rgba(0,0,0,0.15);
+			text-align: left;
+		}
+
+		.sticky-block td {
+			padding: 5px 8px;
+			border-bottom: 1px solid rgba(0,0,0,0.1);
+		}
+
+		.sticky-block img {
+			max-width: 100%;
+			border-radius: 4px;
+			margin: 6px 0;
+		}
+
+		.sticky-block hr {
+			border: none;
+			border-top: 1px dashed rgba(0,0,0,0.2);
+			margin: 12px 0;
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="board">
+
+		<div class="note note-title">
+			<div class="note-heading">{{ title }}</div>
+			<div class="note-meta">{{ config.site.author }} · {{ published_date }}</div>
+		</div>
+
+		<div class="meta-strip">
+			<div class="meta-note">{{ config.site.author }}</div>
+			<div class="meta-note">{{ published_date }}</div>
+			<div class="meta-note">{{ reading_time }}</div>
+			{% if updated_date %}<div class="meta-note" style="background: var(--orange); color: #7c2d12; transform: rotate(-1deg);">Updated {{ updated_date }}</div>{% endif %}
+		</div>
+
+		{% if taxonomy.tags %}
+		<div class="tags-area">
+			{% for tag in taxonomy.tags %}
+			<div class="tag-note"># {{ tag }}</div>
+			{% endfor %}
+		</div>
+		{% endif %}
+
+		<div class="content-grid">
+			<div class="content-area">
+				{{ content | safe }}
+			</div>
+		</div>
+
+	</div>
+
+	<script>
+		// Wrap each direct child of content-area in a sticky-block div
+		document.addEventListener("DOMContentLoaded", function() {
+			const area = document.querySelector(".content-area");
+			if (!area) return;
+			const children = Array.from(area.children);
+			children.forEach(function(el) {
+				const wrapper = document.createElement("div");
+				wrapper.className = "sticky-block";
+				el.parentNode.insertBefore(wrapper, el);
+				wrapper.appendChild(el);
+			});
+		});
+	</script>
+
+</body>
+</html>

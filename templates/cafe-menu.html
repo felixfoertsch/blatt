@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }} — {{ config.site.name }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Shadows+Into+Light&family=Special+Elite&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #3d2a14; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--cream: #f5edd8;
+			--parchment: #efe4c8;
+			--parchment-dark: #e0d0a8;
+			--brown-dark: #3d2010;
+			--brown: #6b3a1f;
+			--brown-mid: #8b5e3c;
+			--brown-light: #c49a6c;
+			--brown-faint: rgba(107,58,31,0.12);
+			--ink: #2a1508;
+		}
+
+		body {
+			background: #3d2a14;
+			background-image:
+				radial-gradient(ellipse at 30% 20%, rgba(100,60,20,0.4) 0%, transparent 60%),
+				radial-gradient(ellipse at 70% 80%, rgba(60,30,10,0.5) 0%, transparent 60%);
+			color: var(--ink);
+			font-family: "Caveat", cursive;
+			font-size: 18px;
+			line-height: 1.65;
+			min-height: 100vh;
+			padding: 32px 16px 48px;
+		}
+
+		.menu-card {
+			max-width: 760px;
+			margin: 0 auto;
+			background: var(--cream);
+			background-image:
+				repeating-linear-gradient(
+					0deg,
+					transparent,
+					transparent 28px,
+					rgba(107,58,31,0.04) 28px,
+					rgba(107,58,31,0.04) 29px
+				);
+			padding: 0;
+			position: relative;
+		}
+
+		/* Ornamental outer border */
+		.menu-border {
+			border: 3px solid var(--brown);
+			padding: 8px;
+		}
+
+		.menu-inner-border {
+			border: 1px solid var(--brown-light);
+			padding: 32px 40px 40px;
+		}
+
+		/* Corner ornaments using CSS */
+		.corner-ornament {
+			position: absolute;
+			width: 40px;
+			height: 40px;
+			font-size: 28px;
+			color: var(--brown-light);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			line-height: 1;
+		}
+
+		.corner-ornament.tl { top: 4px; left: 4px; }
+		.corner-ornament.tr { top: 4px; right: 4px; }
+		.corner-ornament.bl { bottom: 4px; left: 4px; }
+		.corner-ornament.br { bottom: 4px; right: 4px; }
+
+		/* Masthead */
+		.menu-header {
+			text-align: center;
+			margin-bottom: 24px;
+			padding-bottom: 20px;
+		}
+
+		.cafe-name {
+			font-family: "Shadows Into Light", cursive;
+			font-size: clamp(26px, 5vw, 52px);
+			color: var(--brown-dark);
+			line-height: 1.1;
+			letter-spacing: 0.04em;
+			margin-bottom: 6px;
+		}
+
+		.cafe-subtitle {
+			font-size: 15px;
+			color: var(--brown-mid);
+			letter-spacing: 0.12em;
+			font-family: "Special Elite", cursive;
+		}
+
+		.ornamental-divider {
+			text-align: center;
+			font-size: 20px;
+			color: var(--brown-light);
+			margin: 16px 0;
+			letter-spacing: 0.2em;
+		}
+
+		.ornamental-divider-sm {
+			text-align: center;
+			font-size: 16px;
+			color: var(--brown-light);
+			margin: 12px 0;
+			letter-spacing: 0.15em;
+		}
+
+		/* Title section */
+		.item-title-section {
+			text-align: center;
+			margin-bottom: 20px;
+			padding: 16px 0;
+			background: var(--parchment);
+			border-top: 1px solid var(--brown-light);
+			border-bottom: 1px solid var(--brown-light);
+			position: relative;
+		}
+
+		.item-title-section::before,
+		.item-title-section::after {
+			content: "~";
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 24px;
+			color: var(--brown-light);
+		}
+
+		.item-title-section::before { left: 20px; }
+		.item-title-section::after  { right: 20px; }
+
+		.item-title {
+			font-family: "Shadows Into Light", cursive;
+			font-size: clamp(22px, 4vw, 40px);
+			color: var(--brown-dark);
+			line-height: 1.2;
+			letter-spacing: 0.02em;
+		}
+
+		/* Meta row */
+		.meta-row {
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 16px 32px;
+			font-size: 15px;
+			color: var(--brown-mid);
+			padding: 10px 0 16px;
+			font-family: "Special Elite", cursive;
+		}
+
+		.meta-row .bean {
+			color: var(--brown-light);
+		}
+
+		/* Tags */
+		.tag-row {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 8px;
+			margin-bottom: 20px;
+		}
+
+		.tag {
+			font-size: 14px;
+			color: var(--brown);
+			padding: 2px 12px;
+			border: 1px solid var(--brown-light);
+			border-radius: 2px;
+			font-family: "Special Elite", cursive;
+			background: var(--parchment);
+		}
+
+		/* Content */
+		.content-area {
+			margin-top: 8px;
+		}
+
+		.content-area h1 {
+			font-family: "Shadows Into Light", cursive;
+			font-size: 32px;
+			color: var(--brown-dark);
+			margin-top: 32px;
+			margin-bottom: 12px;
+			text-align: center;
+			border-bottom: 1px dashed var(--brown-light);
+			padding-bottom: 8px;
+		}
+
+		.content-area h2 {
+			font-size: 26px;
+			color: var(--brown);
+			margin-top: 28px;
+			margin-bottom: 10px;
+			text-align: center;
+		}
+
+		.content-area h3 {
+			font-size: 22px;
+			color: var(--brown-mid);
+			margin-top: 20px;
+			margin-bottom: 8px;
+		}
+
+		.content-area p {
+			margin-bottom: 14px;
+			color: var(--brown-dark);
+		}
+
+		.content-area a {
+			color: var(--brown);
+			text-decoration: underline;
+			text-decoration-style: dotted;
+		}
+
+		.content-area code {
+			font-family: "Special Elite", cursive;
+			font-size: 16px;
+			background: var(--parchment);
+			padding: 0 5px;
+			border: 1px dashed var(--brown-light);
+			color: var(--brown);
+		}
+
+		.content-area pre {
+			background: var(--parchment-dark);
+			border: 1px solid var(--brown-light);
+			border-left: 3px solid var(--brown);
+			padding: 16px 18px;
+			margin: 16px 0;
+			overflow-x: auto;
+			font-family: "Special Elite", cursive;
+			font-size: 14px;
+			line-height: 1.7;
+		}
+
+		.content-area pre code {
+			background: none;
+			border: none;
+			padding: 0;
+			color: var(--brown-dark);
+		}
+
+		.content-area blockquote {
+			border-top: 1px dashed var(--brown-light);
+			border-bottom: 1px dashed var(--brown-light);
+			padding: 12px 8px;
+			margin: 18px 0;
+			text-align: center;
+			font-size: 20px;
+			font-style: italic;
+			color: var(--brown-mid);
+		}
+
+		.content-area ul {
+			margin: 12px 0 16px 0;
+			list-style: none;
+			padding: 0;
+		}
+
+		.content-area ul li::before {
+			content: "(o) ";
+			color: var(--brown-light);
+		}
+
+		.content-area ol {
+			margin: 12px 0 16px 20px;
+		}
+
+		.content-area ol li::marker {
+			color: var(--brown-mid);
+		}
+
+		.content-area li {
+			margin-bottom: 6px;
+		}
+
+		.content-area table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 16px 0;
+		}
+
+		.content-area th {
+			border-bottom: 2px solid var(--brown);
+			padding: 7px 10px;
+			text-align: left;
+			color: var(--brown-dark);
+			font-size: 16px;
+		}
+
+		.content-area td {
+			border-bottom: 1px dashed var(--brown-light);
+			padding: 7px 10px;
+		}
+
+		.content-area img {
+			max-width: 100%;
+			display: block;
+			margin: 16px auto;
+			border: 2px solid var(--brown-light);
+		}
+
+		.content-area hr {
+			border: none;
+			text-align: center;
+			margin: 24px 0;
+			color: var(--brown-light);
+			font-size: 20px;
+			letter-spacing: 0.3em;
+		}
+
+		.content-area hr::after {
+			content: "* * *";
+		}
+
+		/* Footer */
+		.menu-footer {
+			margin-top: 32px;
+			padding-top: 16px;
+			border-top: 1px solid var(--brown-light);
+			text-align: center;
+			font-family: "Special Elite", cursive;
+			font-size: 13px;
+			color: var(--brown-mid);
+			letter-spacing: 0.08em;
+			line-height: 2;
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="menu-card">
+		<div class="corner-ornament tl">*</div>
+		<div class="corner-ornament tr">*</div>
+		<div class="corner-ornament bl">*</div>
+		<div class="corner-ornament br">*</div>
+
+		<div class="menu-border">
+			<div class="menu-inner-border">
+				<header class="menu-header">
+					<div class="cafe-name">{{ config.site.name }}</div>
+					<div class="cafe-subtitle">Est. by {{ config.site.author }}</div>
+					<div class="ornamental-divider">~ * ~</div>
+				</header>
+
+				<div class="item-title-section">
+					<h1 class="item-title">{{ title }}</h1>
+				</div>
+
+				<div class="meta-row">
+					<span>{{ published_date }}</span>
+					<span class="bean">*</span>
+					<span>{{ reading_time }}</span>
+					{% if updated_date %}
+					<span class="bean">*</span>
+					<span>Updated {{ updated_date }}</span>
+					{% endif %}
+				</div>
+
+				{% if taxonomy.tags %}
+				<div class="tag-row">
+					{% for tag in taxonomy.tags %}
+					<span class="tag">{{ tag }}</span>
+					{% endfor %}
+				</div>
+				{% endif %}
+
+				<div class="ornamental-divider-sm">- - - - - -</div>
+
+				<div class="content-area">
+					{{ content | safe }}
+				</div>
+
+				<div class="ornamental-divider">~ * ~</div>
+
+				<footer class="menu-footer">
+					<div>{{ config.site.name }}</div>
+					<div>{{ config.site.author }} | {{ published_date }}</div>
+				</footer>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

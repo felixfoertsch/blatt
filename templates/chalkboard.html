@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }} — {{ config.site.name }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Caveat+Brush&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #243d24; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--board: #2d4a2d;
+			--board-dark: #243d24;
+			--chalk-white: #f0ede8;
+			--chalk-dim: rgba(240,237,232,0.6);
+			--chalk-faint: rgba(240,237,232,0.3);
+			--chalk-yellow: #f5e642;
+			--chalk-blue: #7ec8e3;
+			--chalk-pink: #f5a0b0;
+			--chalk-orange: #f5b042;
+			--eraser: rgba(240,237,232,0.04);
+		}
+
+		body {
+			background: var(--board-dark);
+			color: var(--chalk-white);
+			font-family: "Caveat", cursive;
+			font-size: 20px;
+			line-height: 1.7;
+			min-height: 100vh;
+			position: relative;
+			overflow-x: hidden;
+		}
+
+		/* SVG noise texture overlay for chalk dust */
+		body::before {
+			content: "";
+			position: fixed;
+			inset: 0;
+			background-image:
+				url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+			pointer-events: none;
+			z-index: 0;
+			opacity: 0.6;
+		}
+
+		/* Chalkboard rail at bottom */
+		body::after {
+			content: "";
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 32px;
+			background: linear-gradient(to bottom, #3d2a1a, #2a1c0e);
+			border-top: 4px solid #5a3d28;
+			z-index: 100;
+		}
+
+		/* Fake eraser smudges */
+		.eraser-marks {
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			z-index: 1;
+			overflow: hidden;
+		}
+
+		.eraser-mark {
+			position: absolute;
+			border-radius: 50%;
+			background: var(--eraser);
+			filter: blur(20px);
+		}
+
+		.board {
+			position: relative;
+			z-index: 2;
+			max-width: 920px;
+			margin: 0 auto;
+			padding: 40px 48px 80px;
+		}
+
+		/* Board edge lines */
+		.board-frame {
+			border: 2px solid rgba(240,237,232,0.12);
+			padding: 32px 40px 48px;
+			position: relative;
+		}
+
+		.board-frame::before,
+		.board-frame::after {
+			content: "";
+			position: absolute;
+			background: rgba(240,237,232,0.08);
+		}
+
+		.board-frame::before {
+			top: 6px;
+			left: 6px;
+			right: 6px;
+			bottom: 6px;
+			border: 1px solid rgba(240,237,232,0.07);
+		}
+
+		/* Header / lecture heading */
+		.lecture-header {
+			text-align: center;
+			margin-bottom: 32px;
+			padding-bottom: 24px;
+			border-bottom: 2px solid var(--chalk-dim);
+			position: relative;
+		}
+
+		.lecture-header::after {
+			content: "";
+			position: absolute;
+			bottom: -6px;
+			left: 10%;
+			right: 10%;
+			border-bottom: 1px solid var(--chalk-faint);
+		}
+
+		.course-label {
+			font-size: 15px;
+			color: var(--chalk-dim);
+			letter-spacing: 0.15em;
+			text-transform: uppercase;
+			margin-bottom: 8px;
+		}
+
+		.lecture-title {
+			font-family: "Caveat Brush", cursive;
+			font-size: clamp(28px, 5vw, 52px);
+			color: var(--chalk-white);
+			text-shadow:
+				1px 1px 0 rgba(255,255,255,0.1),
+				0 0 20px rgba(240,237,232,0.15),
+				2px 2px 4px rgba(0,0,0,0.4);
+			line-height: 1.1;
+			letter-spacing: 0.01em;
+		}
+
+		.lecture-meta {
+			display: flex;
+			justify-content: center;
+			gap: 32px;
+			margin-top: 16px;
+			font-size: 16px;
+			color: var(--chalk-dim);
+		}
+
+		.lecture-meta .chalk-yellow { color: var(--chalk-yellow); }
+
+		/* Chalk line divider */
+		.chalk-divider {
+			text-align: center;
+			margin: 28px 0;
+			height: 2px;
+			background: linear-gradient(
+				to right,
+				transparent 0%,
+				var(--chalk-dim) 15%,
+				var(--chalk-white) 40%,
+				var(--chalk-white) 60%,
+				var(--chalk-dim) 85%,
+				transparent 100%
+			);
+			position: relative;
+		}
+
+		/* Content */
+		.content-area {
+			margin-top: 32px;
+		}
+
+		.content-area h1 {
+			font-family: "Caveat Brush", cursive;
+			font-size: 36px;
+			color: var(--chalk-yellow);
+			text-shadow: 0 0 12px rgba(245,230,66,0.3), 1px 1px 2px rgba(0,0,0,0.5);
+			margin-top: 40px;
+			margin-bottom: 16px;
+			padding-bottom: 8px;
+			border-bottom: 1px solid rgba(245,230,66,0.3);
+			letter-spacing: 0.01em;
+		}
+
+		.content-area h2 {
+			font-size: 28px;
+			color: var(--chalk-blue);
+			text-shadow: 0 0 10px rgba(126,200,227,0.3), 1px 1px 2px rgba(0,0,0,0.5);
+			margin-top: 32px;
+			margin-bottom: 12px;
+		}
+
+		.content-area h3 {
+			font-size: 24px;
+			color: var(--chalk-pink);
+			text-shadow: 0 0 8px rgba(245,160,176,0.3);
+			margin-top: 24px;
+			margin-bottom: 10px;
+		}
+
+		.content-area p {
+			margin-bottom: 18px;
+			text-shadow: 0 0 1px rgba(240,237,232,0.3), 1px 1px 1px rgba(0,0,0,0.3);
+		}
+
+		.content-area a {
+			color: var(--chalk-blue);
+			text-decoration: underline;
+			text-decoration-style: dotted;
+			text-shadow: 0 0 6px rgba(126,200,227,0.3);
+		}
+
+		.content-area code {
+			font-family: "Courier New", monospace;
+			font-size: 16px;
+			color: var(--chalk-orange);
+			background: rgba(245,176,66,0.08);
+			padding: 1px 6px;
+			border: 1px solid rgba(245,176,66,0.2);
+			border-radius: 2px;
+		}
+
+		.content-area pre {
+			background: rgba(0,0,0,0.25);
+			border: 1px solid var(--chalk-faint);
+			border-left: 3px solid var(--chalk-orange);
+			padding: 20px 22px;
+			margin: 20px 0;
+			overflow-x: auto;
+			font-family: "Courier New", monospace;
+			font-size: 15px;
+			line-height: 1.7;
+		}
+
+		.content-area pre code {
+			background: none;
+			border: none;
+			padding: 0;
+			color: var(--chalk-white);
+		}
+
+		.content-area blockquote {
+			border-left: 3px solid var(--chalk-yellow);
+			padding: 12px 20px;
+			margin: 20px 0;
+			background: rgba(245,230,66,0.04);
+			font-style: italic;
+			color: var(--chalk-yellow);
+			text-shadow: 0 0 8px rgba(245,230,66,0.2);
+		}
+
+		.content-area ul,
+		.content-area ol {
+			margin: 14px 0 18px 8px;
+			list-style: none;
+			padding: 0;
+		}
+
+		.content-area ul li::before {
+			content: "- ";
+			color: var(--chalk-dim);
+		}
+
+		.content-area ol {
+			counter-reset: chalkitem;
+		}
+
+		.content-area ol li {
+			counter-increment: chalkitem;
+		}
+
+		.content-area ol li::before {
+			content: counter(chalkitem) ". ";
+			color: var(--chalk-yellow);
+		}
+
+		.content-area li {
+			margin-bottom: 6px;
+			text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+		}
+
+		.content-area table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 20px 0;
+		}
+
+		.content-area th {
+			border-bottom: 2px solid var(--chalk-dim);
+			padding: 8px 12px;
+			text-align: left;
+			color: var(--chalk-yellow);
+			font-size: 18px;
+		}
+
+		.content-area td {
+			border-bottom: 1px solid var(--chalk-faint);
+			padding: 8px 12px;
+		}
+
+		.content-area img {
+			max-width: 100%;
+			border: 1px solid var(--chalk-faint);
+			display: block;
+			margin: 24px auto;
+		}
+
+		.content-area hr {
+			border: none;
+			margin: 28px 0;
+			height: 1px;
+			background: linear-gradient(to right, transparent, var(--chalk-faint), transparent);
+		}
+
+		/* KaTeX math — make it readable on dark board */
+		.content-area .katex {
+			color: var(--chalk-white);
+			font-size: 1.1em;
+		}
+
+		.content-area .katex-display {
+			padding: 16px 0;
+			color: var(--chalk-yellow);
+		}
+
+		.footer-chalk {
+			margin-top: 48px;
+			padding-top: 20px;
+			border-top: 1px solid var(--chalk-faint);
+			display: flex;
+			justify-content: space-between;
+			font-size: 16px;
+			color: var(--chalk-dim);
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="eraser-marks">
+		<div class="eraser-mark" style="width:300px;height:200px;top:15%;left:5%;"></div>
+		<div class="eraser-mark" style="width:200px;height:150px;top:60%;right:8%;"></div>
+		<div class="eraser-mark" style="width:250px;height:180px;top:80%;left:30%;"></div>
+		<div class="eraser-mark" style="width:180px;height:100px;top:35%;right:20%;"></div>
+	</div>
+
+	<div class="board">
+		<div class="board-frame">
+			<header class="lecture-header">
+				<div class="course-label">{{ config.site.name }} — {{ config.site.author }}</div>
+				<div class="lecture-title">{{ title }}</div>
+				<div class="lecture-meta">
+					<span>{{ published_date }}</span>
+					<span class="chalk-yellow">{{ reading_time }}</span>
+					{% if taxonomy.tags %}
+					<span>
+						{% for tag in taxonomy.tags %}{{ tag }}{% if not loop.last %}, {% endif %}{% endfor %}
+					</span>
+					{% endif %}
+				</div>
+			</header>
+
+			<div class="chalk-divider"></div>
+
+			<div class="content-area">
+				{{ content | safe }}
+			</div>
+
+			<div class="footer-chalk">
+				<span>{{ config.site.name }}</span>
+				<span>{{ published_date }}</span>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }} — {{ config.site.name }}</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #008080; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			background-color: #008080;
+			background-image: repeating-linear-gradient(
+				45deg,
+				transparent,
+				transparent 2px,
+				rgba(0,0,0,0.03) 2px,
+				rgba(0,0,0,0.03) 4px
+			);
+			font-family: "Tahoma", "MS Sans Serif", Arial, sans-serif;
+			font-size: 11px;
+			min-height: 100vh;
+			padding: 20px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.desktop-icon-row {
+			width: 100%;
+			max-width: 900px;
+			display: flex;
+			gap: 24px;
+			margin-bottom: 16px;
+			padding: 4px;
+		}
+
+		.window {
+			width: 100%;
+			max-width: 900px;
+			background: #c0c0c0;
+			border-top: 2px solid #ffffff;
+			border-left: 2px solid #ffffff;
+			border-right: 2px solid #808080;
+			border-bottom: 2px solid #808080;
+			box-shadow: 2px 2px 0 #000000;
+		}
+
+		.title-bar {
+			background: linear-gradient(to right, #000080, #1084d0);
+			color: #ffffff;
+			padding: 3px 5px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			user-select: none;
+		}
+
+		.title-bar-left {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-weight: bold;
+			font-size: 11px;
+		}
+
+		.title-bar-icon {
+			width: 16px;
+			height: 16px;
+			background: #ffffff;
+			border: 1px solid #808080;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 9px;
+			color: #000080;
+			font-weight: bold;
+			flex-shrink: 0;
+		}
+
+		.title-bar-buttons {
+			display: flex;
+			gap: 2px;
+		}
+
+		.tb-btn {
+			width: 16px;
+			height: 14px;
+			background: #c0c0c0;
+			border-top: 1px solid #ffffff;
+			border-left: 1px solid #ffffff;
+			border-right: 1px solid #808080;
+			border-bottom: 1px solid #808080;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 9px;
+			color: #000000;
+			cursor: pointer;
+			font-family: "Marlett", "Webdings", sans-serif;
+		}
+
+		.menu-bar {
+			background: #c0c0c0;
+			border-bottom: 1px solid #808080;
+			padding: 2px 4px;
+			display: flex;
+			gap: 2px;
+		}
+
+		.menu-item {
+			padding: 2px 8px;
+			font-size: 11px;
+			cursor: pointer;
+		}
+
+		.menu-item:hover {
+			background: #000080;
+			color: #ffffff;
+		}
+
+		.toolbar {
+			background: #c0c0c0;
+			border-bottom: 1px solid #808080;
+			padding: 3px 4px;
+			display: flex;
+			gap: 4px;
+			align-items: center;
+		}
+
+		.tool-btn {
+			width: 24px;
+			height: 22px;
+			background: #c0c0c0;
+			border-top: 1px solid #ffffff;
+			border-left: 1px solid #ffffff;
+			border-right: 1px solid #808080;
+			border-bottom: 1px solid #808080;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 10px;
+			cursor: pointer;
+		}
+
+		.toolbar-sep {
+			width: 1px;
+			height: 20px;
+			background: #808080;
+			border-right: 1px solid #ffffff;
+			margin: 0 2px;
+		}
+
+		.address-bar {
+			background: #c0c0c0;
+			border-bottom: 1px solid #808080;
+			padding: 3px 6px;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 11px;
+		}
+
+		.address-label {
+			font-size: 11px;
+			color: #000000;
+		}
+
+		.address-input {
+			flex: 1;
+			background: #ffffff;
+			border-top: 1px solid #808080;
+			border-left: 1px solid #808080;
+			border-right: 1px solid #ffffff;
+			border-bottom: 1px solid #ffffff;
+			padding: 1px 4px;
+			font-size: 11px;
+			font-family: "Tahoma", Arial, sans-serif;
+		}
+
+		.window-body {
+			display: flex;
+			min-height: 500px;
+		}
+
+		.sidebar {
+			width: 160px;
+			background: #c0c0c0;
+			border-right: 2px solid #808080;
+			padding: 8px 4px;
+			flex-shrink: 0;
+		}
+
+		.sidebar-section {
+			margin-bottom: 12px;
+		}
+
+		.sidebar-header {
+			background: #000080;
+			color: #ffffff;
+			padding: 2px 6px;
+			font-size: 10px;
+			font-weight: bold;
+			margin-bottom: 4px;
+		}
+
+		.sidebar-item {
+			padding: 2px 6px;
+			font-size: 11px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+		}
+
+		.sidebar-item:hover {
+			background: #000080;
+			color: #ffffff;
+		}
+
+		.sidebar-icon {
+			width: 16px;
+			height: 16px;
+			background: #ffff00;
+			border: 1px solid #808080;
+			display: inline-block;
+			font-size: 8px;
+			text-align: center;
+			line-height: 16px;
+		}
+
+		.content-area {
+			flex: 1;
+			background: #ffffff;
+			border-top: 2px inset #808080;
+			border-left: 2px inset #808080;
+			overflow: auto;
+		}
+
+		.content-header {
+			background: #c0c0c0;
+			border-bottom: 1px solid #808080;
+			padding: 6px 12px;
+			display: flex;
+			gap: 20px;
+			font-size: 10px;
+			color: #444444;
+		}
+
+		.content-scroll {
+			padding: 16px 20px;
+			font-size: 12px;
+			line-height: 1.6;
+			color: #000000;
+		}
+
+		.content-scroll h1 {
+			font-size: 18px;
+			font-weight: bold;
+			margin-bottom: 16px;
+			padding-bottom: 6px;
+			border-bottom: 2px solid #000080;
+			color: #000080;
+		}
+
+		.content-scroll h2 {
+			font-size: 15px;
+			font-weight: bold;
+			margin-top: 20px;
+			margin-bottom: 8px;
+			color: #000080;
+		}
+
+		.content-scroll h3 {
+			font-size: 13px;
+			font-weight: bold;
+			margin-top: 16px;
+			margin-bottom: 6px;
+		}
+
+		.content-scroll p {
+			margin-bottom: 10px;
+		}
+
+		.content-scroll ul,
+		.content-scroll ol {
+			margin: 8px 0 10px 20px;
+		}
+
+		.content-scroll li {
+			margin-bottom: 4px;
+		}
+
+		.content-scroll code {
+			font-family: "Courier New", monospace;
+			font-size: 11px;
+			background: #f0f0f0;
+			border: 1px solid #c0c0c0;
+			padding: 0 3px;
+		}
+
+		.content-scroll pre {
+			background: #f0f0f0;
+			border-top: 1px solid #808080;
+			border-left: 1px solid #808080;
+			border-right: 1px solid #ffffff;
+			border-bottom: 1px solid #ffffff;
+			padding: 8px;
+			margin: 10px 0;
+			overflow-x: auto;
+			font-family: "Courier New", monospace;
+			font-size: 11px;
+		}
+
+		.content-scroll pre code {
+			background: none;
+			border: none;
+			padding: 0;
+		}
+
+		.content-scroll blockquote {
+			border-left: 3px solid #000080;
+			padding-left: 12px;
+			margin: 10px 0;
+			color: #444444;
+			font-style: italic;
+		}
+
+		.content-scroll table {
+			border-collapse: collapse;
+			width: 100%;
+			margin: 10px 0;
+		}
+
+		.content-scroll th {
+			background: #000080;
+			color: #ffffff;
+			padding: 4px 8px;
+			text-align: left;
+			font-size: 11px;
+		}
+
+		.content-scroll td {
+			border: 1px solid #c0c0c0;
+			padding: 4px 8px;
+			font-size: 11px;
+		}
+
+		.content-scroll tr:nth-child(even) td {
+			background: #f0f0f0;
+		}
+
+		.content-scroll a {
+			color: #0000ff;
+			text-decoration: underline;
+		}
+
+		.content-scroll img {
+			max-width: 100%;
+			border: 2px inset #808080;
+		}
+
+		.status-bar {
+			background: #c0c0c0;
+			border-top: 2px solid #808080;
+			padding: 2px 6px;
+			display: flex;
+			gap: 1px;
+			font-size: 10px;
+		}
+
+		.status-pane {
+			flex: 1;
+			border-top: 1px solid #808080;
+			border-left: 1px solid #808080;
+			border-right: 1px solid #ffffff;
+			border-bottom: 1px solid #ffffff;
+			padding: 1px 6px;
+		}
+
+		.taskbar {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 32px;
+			background: #c0c0c0;
+			border-top: 2px solid #ffffff;
+			display: flex;
+			align-items: center;
+			padding: 0 4px;
+			gap: 4px;
+			z-index: 1000;
+		}
+
+		.start-btn {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			background: #c0c0c0;
+			border-top: 2px solid #ffffff;
+			border-left: 2px solid #ffffff;
+			border-right: 2px solid #808080;
+			border-bottom: 2px solid #808080;
+			padding: 2px 8px;
+			font-weight: bold;
+			font-size: 11px;
+			cursor: pointer;
+			height: 24px;
+		}
+
+		.start-logo {
+			width: 16px;
+			height: 16px;
+			background: linear-gradient(135deg, #ff0000 25%, #00ff00 25%, #00ff00 50%, #0000ff 50%, #0000ff 75%, #ffff00 75%);
+			border: 1px solid #000000;
+			flex-shrink: 0;
+		}
+
+		.taskbar-sep {
+			width: 2px;
+			height: 22px;
+			border-left: 1px solid #808080;
+			border-right: 1px solid #ffffff;
+			margin: 0 2px;
+		}
+
+		.taskbar-window {
+			height: 24px;
+			background: #c0c0c0;
+			border-top: 2px solid #808080;
+			border-left: 2px solid #808080;
+			border-right: 2px solid #ffffff;
+			border-bottom: 2px solid #ffffff;
+			padding: 0 8px;
+			font-size: 11px;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			cursor: pointer;
+		}
+
+		.taskbar-clock {
+			margin-left: auto;
+			border-top: 1px solid #808080;
+			border-left: 1px solid #808080;
+			border-right: 1px solid #ffffff;
+			border-bottom: 1px solid #ffffff;
+			padding: 2px 6px;
+			font-size: 11px;
+		}
+
+		body {
+			padding-bottom: 48px;
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="window">
+		<div class="title-bar">
+			<div class="title-bar-left">
+				<div class="title-bar-icon">N</div>
+				{{ title }} — {{ config.site.name }}
+			</div>
+			<div class="title-bar-buttons">
+				<div class="tb-btn">_</div>
+				<div class="tb-btn">&#9633;</div>
+				<div class="tb-btn">x</div>
+			</div>
+		</div>
+
+		<div class="menu-bar">
+			<span class="menu-item">File</span>
+			<span class="menu-item">Edit</span>
+			<span class="menu-item">View</span>
+			<span class="menu-item">Go</span>
+			<span class="menu-item">Favorites</span>
+			<span class="menu-item">Help</span>
+		</div>
+
+		<div class="toolbar">
+			<div class="tool-btn">&#9664;</div>
+			<div class="tool-btn">&#9654;</div>
+			<div class="tool-btn">&#8593;</div>
+			<div class="toolbar-sep"></div>
+			<div class="tool-btn">&#9003;</div>
+			<div class="tool-btn">&#9998;</div>
+			<div class="toolbar-sep"></div>
+			<div class="tool-btn">&#9733;</div>
+			<div class="tool-btn">&#9776;</div>
+			<div class="tool-btn">&#128247;</div>
+		</div>
+
+		<div class="address-bar">
+			<span class="address-label">Address</span>
+			<div class="address-input">C:\Documents\{{ config.site.name }}\posts\{{ title }}</div>
+		</div>
+
+		<div class="window-body">
+			<div class="sidebar">
+				<div class="sidebar-section">
+					<div class="sidebar-header">Site</div>
+					<div class="sidebar-item">
+						<span class="sidebar-icon">H</span> Home
+					</div>
+					<div class="sidebar-item">
+						<span class="sidebar-icon">P</span> Posts
+					</div>
+					<div class="sidebar-item">
+						<span class="sidebar-icon">A</span> About
+					</div>
+				</div>
+				<div class="sidebar-section">
+					<div class="sidebar-header">File Info</div>
+					<div class="sidebar-item">Date: {{ published_date }}</div>
+					<div class="sidebar-item">Read: {{ reading_time }}</div>
+					{% if taxonomy.tags %}
+					<div class="sidebar-item">Tags:</div>
+					{% for tag in taxonomy.tags %}
+					<div class="sidebar-item" style="padding-left:16px;">> {{ tag }}</div>
+					{% endfor %}
+					{% endif %}
+				</div>
+				<div class="sidebar-section">
+					<div class="sidebar-header">Author</div>
+					<div class="sidebar-item">{{ config.site.author }}</div>
+				</div>
+			</div>
+
+			<div class="content-area">
+				<div class="content-scroll">
+					{{ content | safe }}
+				</div>
+			</div>
+		</div>
+
+		<div class="status-bar">
+			<div class="status-pane">{{ reading_time }}</div>
+			<div class="status-pane">{{ published_date }}</div>
+			<div class="status-pane">{{ config.site.name }}</div>
+		</div>
+	</div>
+
+	<div class="taskbar">
+		<div class="start-btn">
+			<div class="start-logo"></div>
+			Start
+		</div>
+		<div class="taskbar-sep"></div>
+		<div class="taskbar-window">
+			<div class="title-bar-icon">N</div>
+			{{ title }}
+		</div>
+		<div class="taskbar-clock">{{ published_date }}</div>
+	</div>
+
+</body>
+</html>

@@ -11,7 +11,7 @@ Drop markdown files in a folder. They become a website. No admin panel, no datab
 - Folder structure maps directly to URLs — every directory with an `index.md` becomes a page
 - YAML frontmatter for title, description, template selection, and taxonomy
 - Full markdown pipeline: GFM tables, footnotes, math (KaTeX), syntax highlighting (Shiki), admonitions, smart typography, heading anchors, figure captions, external link decoration, TOC generation, definition lists, task lists, mermaid diagrams
-- Nunjucks templates with inheritance — use the built-in defaults or drop in your own
+- Nunjucks templates with inheritance — 30 built-in creative themes, or drop in your own
 - Collection pages — a directory that lists its children sorted by date (blog index, notes archive, etc.)
 - Draft support — set `published: false` to hide a page; preview it with `?preview=<token>`
 - RSS feed and sitemap generated automatically
@@ -133,7 +133,9 @@ The page renders using the `collection` template, which receives the matched chi
 
 ## Templates
 
-Blatt ships four built-in templates:
+Blatt ships with core layout templates and 30 creative themes.
+
+### Core templates
 
 | Template | Used for |
 |----------|----------|
@@ -141,6 +143,43 @@ Blatt ships four built-in templates:
 | `post` | Article with date, reading time, and tags |
 | `collection` | Page that lists child pages |
 | `base` | Base layout — all other templates extend this |
+
+### Themes
+
+Set `template: dracula` in frontmatter to use any built-in theme:
+
+| Theme | Style |
+|-------|-------|
+| `win98` | Windows 98 desktop with taskbar and Explorer chrome |
+| `dracula` | Dark theme with Dracula color palette |
+| `terminal` | Green-on-black terminal emulator |
+| `chalkboard` | Chalk on a green chalkboard |
+| `crypto-hacker` | Neon hacker aesthetic with matrix rain |
+| `meditation` | Minimal zen layout with soft earth tones |
+| `newspaper` | Multi-column broadsheet with sepia ink |
+| `academic` | LaTeX-inspired academic paper |
+| `void` | Pure black with minimal white typography |
+| `cafe-menu` | Warm coffee shop menu board |
+| `apple-hig` | Apple Human Interface Guidelines style |
+| `typewriter` | Monospaced typewriter on aged paper |
+| `xcode` | IDE editor with syntax-highlighted chrome |
+| `passport` | Travel document with stamps and seals |
+| `vinyl-record` | Record sleeve with liner notes |
+| `bootscreen` | BIOS/POST boot sequence |
+| `stage-play` | Theater script with stage directions |
+| `fediverse-toot` | Mastodon/fediverse toot card |
+| `conspiracy` | Red string conspiracy board |
+| `startup-pitch` | Investor pitch deck |
+| `ipad-ui` | iPadOS multitasking interface |
+| `invoice` | Business invoice/receipt |
+| `math-theorem` | Mathematical proof layout |
+| `envelope` | Physical letter with envelope |
+| `retro-unix-manual` | Unix man page |
+| `podcast-notes` | Podcast episode show notes |
+| `sticky-notes` | Post-it notes on a corkboard |
+| `color-palette` | Design system color swatch card |
+| `hardcover-book` | Hardcover book with chapter layout |
+| `tech-catalog` | Product spec sheet |
 
 Select a template per page with `template: post` in frontmatter.
 

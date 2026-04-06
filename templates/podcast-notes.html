@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }} — {{ config.site.name }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #1a0a38; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--purple-dark: #4b2d8f;
+			--purple-mid: #6441a5;
+			--purple-light: #9b59b6;
+			--purple-pale: #c39bd3;
+			--bg-gradient-start: #2c1654;
+			--bg-gradient-end: #1a0a38;
+			--card: #ffffff;
+			--text: #1a1a2e;
+			--muted: #4a4a6a;
+			--dim: #8e8ea8;
+			--border: #e8e4f0;
+		}
+
+		body {
+			background: linear-gradient(160deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+			min-height: 100vh;
+			font-family: "Inter", -apple-system, system-ui, sans-serif;
+			font-size: 15px;
+			line-height: 1.55;
+			padding: 24px 16px 60px;
+		}
+
+		/* App chrome */
+		.app {
+			max-width: 680px;
+			margin: 0 auto;
+		}
+
+		/* Top navigation */
+		.nav {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 0 4px 20px;
+		}
+
+		.nav-back {
+			font-size: 14px;
+			font-weight: 600;
+			color: rgba(255,255,255,0.7);
+		}
+
+		.nav-title {
+			font-size: 14px;
+			font-weight: 600;
+			color: rgba(255,255,255,0.9);
+		}
+
+		.nav-action {
+			font-size: 14px;
+			font-weight: 600;
+			color: #c39bd3;
+		}
+
+		/* Podcast artwork + info */
+		.episode-hero {
+			display: flex;
+			align-items: flex-start;
+			gap: 16px;
+			margin-bottom: 20px;
+			padding: 20px;
+			background: rgba(255,255,255,0.07);
+			border-radius: 20px;
+			backdrop-filter: blur(12px);
+		}
+
+		.artwork {
+			width: 88px;
+			height: 88px;
+			border-radius: 14px;
+			background: linear-gradient(135deg, var(--purple-mid), #e91e8c);
+			flex-shrink: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+			overflow: hidden;
+		}
+
+		.artwork-letter {
+			font-size: 36px;
+			font-weight: 800;
+			color: rgba(255,255,255,0.9);
+			letter-spacing: -0.03em;
+		}
+
+		.episode-info {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.episode-show {
+			font-size: 11px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			color: var(--purple-pale);
+			margin-bottom: 4px;
+		}
+
+		.episode-title {
+			font-size: 17px;
+			font-weight: 700;
+			color: #fff;
+			line-height: 1.25;
+			margin-bottom: 8px;
+		}
+
+		.episode-meta {
+			display: flex;
+			gap: 12px;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+		.episode-meta-item {
+			font-size: 12px;
+			font-weight: 500;
+			color: rgba(255,255,255,0.5);
+		}
+
+		.episode-label {
+			font-size: 10px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.12em;
+			color: var(--purple-pale);
+			background: rgba(155,89,182,0.2);
+			padding: 2px 8px;
+			border-radius: 999px;
+		}
+
+		/* Waveform */
+		.waveform {
+			margin-bottom: 20px;
+			padding: 16px 20px;
+			background: rgba(255,255,255,0.07);
+			border-radius: 16px;
+		}
+
+		.waveform-bars {
+			display: flex;
+			gap: 2px;
+			align-items: center;
+			height: 40px;
+		}
+
+		.waveform-bar {
+			flex: 1;
+			background: rgba(195,155,211,0.4);
+			border-radius: 2px;
+			min-height: 4px;
+		}
+
+		/* Generate waveform via nth-child heights */
+		.waveform-bar:nth-child(1)  { height: 20%; }
+		.waveform-bar:nth-child(2)  { height: 60%; }
+		.waveform-bar:nth-child(3)  { height: 40%; }
+		.waveform-bar:nth-child(4)  { height: 85%; }
+		.waveform-bar:nth-child(5)  { height: 55%; }
+		.waveform-bar:nth-child(6)  { height: 100%; background: #c39bd3; }
+		.waveform-bar:nth-child(7)  { height: 70%; background: #c39bd3; }
+		.waveform-bar:nth-child(8)  { height: 45%; }
+		.waveform-bar:nth-child(9)  { height: 30%; }
+		.waveform-bar:nth-child(10) { height: 65%; }
+		.waveform-bar:nth-child(11) { height: 50%; }
+		.waveform-bar:nth-child(12) { height: 80%; }
+		.waveform-bar:nth-child(13) { height: 35%; }
+		.waveform-bar:nth-child(14) { height: 60%; }
+		.waveform-bar:nth-child(15) { height: 90%; }
+		.waveform-bar:nth-child(16) { height: 45%; }
+		.waveform-bar:nth-child(17) { height: 25%; }
+		.waveform-bar:nth-child(18) { height: 70%; }
+		.waveform-bar:nth-child(19) { height: 55%; }
+		.waveform-bar:nth-child(20) { height: 40%; }
+		.waveform-bar:nth-child(21) { height: 75%; }
+		.waveform-bar:nth-child(22) { height: 35%; }
+		.waveform-bar:nth-child(23) { height: 60%; }
+		.waveform-bar:nth-child(24) { height: 45%; }
+		.waveform-bar:nth-child(25) { height: 85%; }
+		.waveform-bar:nth-child(26) { height: 30%; }
+		.waveform-bar:nth-child(27) { height: 65%; }
+		.waveform-bar:nth-child(28) { height: 50%; }
+		.waveform-bar:nth-child(29) { height: 40%; }
+		.waveform-bar:nth-child(30) { height: 70%; }
+
+		.waveform-timeline {
+			display: flex;
+			justify-content: space-between;
+			margin-top: 6px;
+			font-size: 10px;
+			font-weight: 500;
+			color: rgba(255,255,255,0.35);
+		}
+
+		/* Playback controls */
+		.controls {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 28px;
+			margin-bottom: 20px;
+		}
+
+		.ctrl-btn {
+			font-size: 20px;
+			color: rgba(255,255,255,0.6);
+		}
+
+		.ctrl-play {
+			width: 52px;
+			height: 52px;
+			background: #fff;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 20px;
+			color: var(--purple-dark);
+			box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+		}
+
+		/* Content card */
+		.notes-card {
+			background: var(--card);
+			border-radius: 20px;
+			overflow: hidden;
+		}
+
+		.notes-header {
+			padding: 20px 24px 16px;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.notes-label {
+			font-size: 11px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			color: var(--purple-mid);
+			margin-bottom: 4px;
+		}
+
+		.notes-title {
+			font-size: 20px;
+			font-weight: 700;
+			color: var(--text);
+			line-height: 1.3;
+		}
+
+		.notes-meta {
+			display: flex;
+			gap: 12px;
+			margin-top: 8px;
+			flex-wrap: wrap;
+		}
+
+		.notes-meta-chip {
+			font-size: 11px;
+			font-weight: 600;
+			color: var(--purple-mid);
+			background: rgba(100,65,165,0.08);
+			padding: 3px 9px;
+			border-radius: 999px;
+		}
+
+		/* Tags */
+		.notes-tags {
+			display: flex;
+			gap: 6px;
+			flex-wrap: wrap;
+			padding: 12px 24px;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.tag {
+			font-size: 11px;
+			font-weight: 600;
+			color: var(--purple-mid);
+			background: rgba(100,65,165,0.08);
+			padding: 3px 10px;
+			border-radius: 999px;
+		}
+
+		.notes-body {
+			padding: 20px 24px 28px;
+		}
+
+		/* Content */
+		.content-area h1 {
+			font-size: 20px;
+			font-weight: 700;
+			color: var(--text);
+			margin-top: 28px;
+			margin-bottom: 10px;
+		}
+
+		.content-area h2 {
+			font-size: 16px;
+			font-weight: 700;
+			color: var(--purple-mid);
+			margin-top: 22px;
+			margin-bottom: 8px;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			font-size: 12px;
+		}
+
+		.content-area h3 {
+			font-size: 15px;
+			font-weight: 600;
+			color: var(--text);
+			margin-top: 18px;
+			margin-bottom: 6px;
+		}
+
+		.content-area h4, .content-area h5, .content-area h6 {
+			font-size: 14px;
+			font-weight: 600;
+			color: var(--muted);
+			margin-top: 14px;
+			margin-bottom: 4px;
+		}
+
+		.content-area p {
+			font-size: 15px;
+			margin-bottom: 12px;
+			color: var(--muted);
+			line-height: 1.65;
+		}
+
+		.content-area a {
+			color: var(--purple-mid);
+			text-decoration: none;
+			font-weight: 500;
+		}
+
+		.content-area a:hover {
+			text-decoration: underline;
+		}
+
+		.content-area code {
+			font-family: "SF Mono", "Menlo", monospace;
+			font-size: 12.5px;
+			background: rgba(100,65,165,0.08);
+			color: var(--purple-dark);
+			padding: 2px 6px;
+			border-radius: 5px;
+		}
+
+		.content-area pre {
+			background: var(--text);
+			border-radius: 12px;
+			padding: 16px 18px;
+			margin: 14px 0;
+			overflow-x: auto;
+		}
+
+		.content-area pre code {
+			background: none;
+			color: #e8e4f0;
+			padding: 0;
+			font-size: 13px;
+		}
+
+		.content-area blockquote {
+			border-left: 3px solid var(--purple-mid);
+			background: rgba(100,65,165,0.05);
+			border-radius: 0 10px 10px 0;
+			padding: 12px 16px;
+			margin: 14px 0;
+		}
+
+		.content-area blockquote p {
+			color: var(--purple-dark);
+			font-weight: 500;
+			margin: 0;
+		}
+
+		.content-area ul {
+			margin: 8px 0 14px 0;
+			list-style: none;
+			padding: 0;
+		}
+
+		.content-area ul li {
+			padding-left: 18px;
+			margin-bottom: 5px;
+			color: var(--muted);
+			position: relative;
+		}
+
+		.content-area ul li::before {
+			content: "";
+			position: absolute;
+			left: 4px;
+			top: 8px;
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			background: var(--purple-pale);
+		}
+
+		.content-area ol {
+			margin: 8px 0 14px 22px;
+			color: var(--muted);
+		}
+
+		.content-area li {
+			margin-bottom: 5px;
+		}
+
+		.content-area table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 14px 0;
+			font-size: 14px;
+			border-radius: 10px;
+			overflow: hidden;
+		}
+
+		.content-area th {
+			background: rgba(100,65,165,0.08);
+			padding: 9px 13px;
+			text-align: left;
+			font-size: 11px;
+			font-weight: 700;
+			color: var(--purple-mid);
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+		}
+
+		.content-area td {
+			padding: 9px 13px;
+			border-top: 1px solid var(--border);
+			color: var(--muted);
+		}
+
+		.content-area img {
+			max-width: 100%;
+			border-radius: 10px;
+			margin: 10px 0;
+		}
+
+		.content-area hr {
+			border: none;
+			border-top: 1px solid var(--border);
+			margin: 20px 0;
+		}
+
+		/* Subscribe section */
+		.subscribe-bar {
+			margin-top: 20px;
+			padding: 16px 20px;
+			background: rgba(255,255,255,0.07);
+			border-radius: 16px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.subscribe-text {
+			font-size: 13px;
+			font-weight: 600;
+			color: rgba(255,255,255,0.8);
+		}
+
+		.subscribe-btn {
+			font-size: 12px;
+			font-weight: 700;
+			color: var(--purple-dark);
+			background: #fff;
+			padding: 7px 16px;
+			border-radius: 999px;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="app">
+
+		<nav class="nav">
+			<div class="nav-back">Library</div>
+			<div class="nav-title">{{ config.site.name }}</div>
+			<div class="nav-action">Share</div>
+		</nav>
+
+		<div class="episode-hero">
+			<div class="artwork">
+				<div class="artwork-letter">{{ config.site.author | first }}</div>
+			</div>
+			<div class="episode-info">
+				<div class="episode-show">{{ config.site.name }}</div>
+				<div class="episode-title">{{ title }}</div>
+				<div class="episode-meta">
+					<span class="episode-label">EPISODE</span>
+					<span class="episode-meta-item">{{ published_date }}</span>
+					<span class="episode-meta-item">{{ reading_time }}</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="waveform">
+			<div class="waveform-bars">
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+				<div class="waveform-bar"></div>
+			</div>
+			<div class="waveform-timeline">
+				<span>0:00</span>
+				<span>{{ reading_time }}</span>
+			</div>
+		</div>
+
+		<div class="controls">
+			<div class="ctrl-btn">&#8634;</div>
+			<div class="ctrl-btn">&#9664;&#9664;</div>
+			<div class="ctrl-play">&#9654;</div>
+			<div class="ctrl-btn">&#9654;&#9654;</div>
+			<div class="ctrl-btn">&#9654;&#9654;&#9654;</div>
+		</div>
+
+		<div class="notes-card">
+			<div class="notes-header">
+				<div class="notes-label">Show Notes</div>
+				<div class="notes-title">{{ title }}</div>
+				<div class="notes-meta">
+					<span class="notes-meta-chip">{{ config.site.author }}</span>
+					<span class="notes-meta-chip">{{ published_date }}</span>
+					{% if updated_date %}<span class="notes-meta-chip">Updated {{ updated_date }}</span>{% endif %}
+				</div>
+			</div>
+
+			{% if taxonomy.tags %}
+			<div class="notes-tags">
+				{% for tag in taxonomy.tags %}
+				<span class="tag">{{ tag }}</span>
+				{% endfor %}
+			</div>
+			{% endif %}
+
+			<div class="notes-body">
+				<div class="content-area">
+					{{ content | safe }}
+				</div>
+			</div>
+		</div>
+
+		<div class="subscribe-bar">
+			<div class="subscribe-text">{{ config.site.name }}</div>
+			<div class="subscribe-btn">Subscribe</div>
+		</div>
+
+	</div>
+
+</body>
+</html>

@@ -371,6 +371,81 @@
 			font-size: 0.75rem;
 		}
 
+		/* --- THEMES CAROUSEL --- */
+		.themes-carousel {
+			overflow-x: auto;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: thin;
+			scrollbar-color: var(--rule) transparent;
+			margin: 3rem -2rem 0;
+			padding: 0 2rem 1rem;
+		}
+
+		.themes-carousel::-webkit-scrollbar {
+			height: 6px;
+		}
+
+		.themes-carousel::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		.themes-carousel::-webkit-scrollbar-thumb {
+			background: var(--rule);
+			border-radius: 3px;
+		}
+
+		.themes-track {
+			display: flex;
+			gap: 1rem;
+			width: max-content;
+		}
+
+		.theme-card {
+			flex-shrink: 0;
+			width: 160px;
+		}
+
+		.theme-preview {
+			width: 160px;
+			height: 110px;
+			border-radius: 4px;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+			border: 1px solid var(--rule);
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		.theme-card:hover .theme-preview {
+			transform: translateY(-3px);
+			box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+		}
+
+		.theme-name {
+			display: block;
+			font-family: var(--font-mono);
+			font-size: 0.7rem;
+			color: var(--ink-light);
+			margin-top: 0.5rem;
+			text-align: center;
+		}
+
+		.tp-bar {
+			width: 100%;
+			height: 8px;
+			flex-shrink: 0;
+		}
+
+		.tp-line {
+			height: 3px;
+			border-radius: 1px;
+			margin-bottom: 3px;
+		}
+
+		.tp-body {
+			margin: 4px;
+		}
+
 		/* --- NOT LIST --- */
 		.not-grid {
 			display: grid;
@@ -556,8 +631,8 @@ This is a callout block.
 				<p>KaTeX for LaTeX math expressions. Shiki for syntax highlighting with VS Code themes. Mermaid diagrams from fenced code blocks.</p>
 			</div>
 			<div class="feature">
-				<h3>Templates</h3>
-				<p>Nunjucks templates with inheritance. Set a default, override per page via frontmatter. Ship your own or use the built-in theme.</p>
+				<h3>30 themes</h3>
+				<p>From Windows 98 to Dracula to academic papers. Pick a theme per page in frontmatter, or create your own with Nunjucks.</p>
 			</div>
 			<div class="feature">
 				<h3>Collections</h3>
@@ -624,6 +699,203 @@ This is a callout block.
 				</div>
 			</div>
 		</div>
+	</section>
+
+	<!-- THEMES -->
+	<section>
+		<p class="section-label reveal">30 built-in themes</p>
+		<h2 class="reveal">One post, <em>thirty looks</em></h2>
+		<p class="section-intro reveal">Every theme ships with Blatt. Set <code style="font-family: var(--font-mono); font-size: 0.85em; background: var(--paper-dark); padding: 0.15em 0.4em; border-radius: 2px;">template: dracula</code> in frontmatter and you're done.</p>
+		<div class="themes-carousel reveal">
+			<div class="themes-track">
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #008080;">
+						<div class="tp-bar" style="background: linear-gradient(to right, #000080, #1084d0); height: 16px; border-radius: 0;"></div>
+						<div class="tp-body" style="background: #c0c0c0; flex: 1; margin: 4px; border: 1px inset #808080;"></div>
+						<div class="tp-bar" style="background: #c0c0c0; height: 20px; border-top: 2px solid #fff;"></div>
+					</div>
+					<span class="theme-name">win98</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #282a36;">
+						<div class="tp-line" style="background: #ff79c6; width: 60%;"></div>
+						<div class="tp-line" style="background: #bd93f9; width: 80%;"></div>
+						<div class="tp-line" style="background: #50fa7b; width: 45%;"></div>
+						<div class="tp-line" style="background: #f8f8f2; width: 70%;"></div>
+					</div>
+					<span class="theme-name">dracula</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #000; font-family: monospace; color: #0f0; padding: 12px; font-size: 8px; line-height: 1.5; overflow: hidden;">
+						<div style="opacity: 0.7;">$ cat post.md</div>
+						<div style="color: #0a0;">---</div>
+						<div style="color: #0f0;">title: _</div>
+						<div style="color: #0a0;">---</div>
+					</div>
+					<span class="theme-name">terminal</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #243d24;">
+						<div class="tp-bar" style="background: linear-gradient(to bottom, #3d2a1a, #2a1c0e); height: 12px;"></div>
+						<div style="flex: 1; padding: 8px;">
+							<div class="tp-line" style="background: rgba(255,255,200,0.3); width: 50%;"></div>
+							<div class="tp-line" style="background: rgba(255,255,200,0.15); width: 80%;"></div>
+						</div>
+					</div>
+					<span class="theme-name">chalkboard</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #000;">
+						<div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+							<div style="width: 50px; height: 50px; border-radius: 50%; background: conic-gradient(#ff0040, #ff8000, #ffff00, #00ff40, #0080ff, #8000ff, #ff0040);"></div>
+						</div>
+					</div>
+					<span class="theme-name">crypto-hacker</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #faf7f2;">
+						<div style="flex: 1; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+							<div style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #a08060; opacity: 0.3;"></div>
+							<div class="tp-line" style="background: #a08060; width: 40%; margin-top: 8px; opacity: 0.3;"></div>
+						</div>
+					</div>
+					<span class="theme-name">meditation</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #8a7a60;">
+						<div style="flex: 1; margin: 6px; background: #f5f0e6; padding: 8px;">
+							<div class="tp-line" style="background: #1a1612; width: 70%; height: 6px;"></div>
+							<div style="display: flex; gap: 4px; margin-top: 4px;">
+								<div class="tp-line" style="background: #c0b8a0; width: 48%; height: 2px;"></div>
+								<div class="tp-line" style="background: #c0b8a0; width: 48%; height: 2px;"></div>
+							</div>
+						</div>
+					</div>
+					<span class="theme-name">newspaper</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #d4ccc0;">
+						<div style="flex: 1; margin: 8px; padding: 8px;">
+							<div class="tp-line" style="background: #1a1612; width: 60%; height: 5px;"></div>
+							<div class="tp-line" style="background: #666; width: 30%; height: 2px;"></div>
+							<div class="tp-line" style="background: #888; width: 85%;"></div>
+							<div class="tp-line" style="background: #888; width: 75%;"></div>
+						</div>
+					</div>
+					<span class="theme-name">academic</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #000;">
+						<div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+							<div style="color: #fff; font-size: 24px; font-weight: 200; opacity: 0.6;">&#8734;</div>
+						</div>
+					</div>
+					<span class="theme-name">void</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #3d2a14;">
+						<div style="flex: 1; margin: 8px; background: #f5f0e8; border-radius: 0; padding: 8px;">
+							<div class="tp-line" style="background: #3d2a14; width: 50%; height: 4px;"></div>
+							<div class="tp-line" style="background: #8b7355; width: 70%;"></div>
+						</div>
+					</div>
+					<span class="theme-name">cafe-menu</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #f2f2f7;">
+						<div class="tp-bar" style="background: rgba(0,0,0,0.05); height: 14px;"></div>
+						<div style="flex: 1; padding: 6px;">
+							<div style="background: #fff; border-radius: 6px; padding: 6px; margin-bottom: 4px;">
+								<div class="tp-line" style="background: #007aff; width: 40%;"></div>
+							</div>
+							<div style="background: #fff; border-radius: 6px; padding: 6px;">
+								<div class="tp-line" style="background: #1c1c1e; width: 60%;"></div>
+							</div>
+						</div>
+					</div>
+					<span class="theme-name">apple-hig</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #c8b99a;">
+						<div style="flex: 1; padding: 10px;">
+							<div class="tp-line" style="background: #2c2416; width: 55%; height: 4px;"></div>
+							<div class="tp-line" style="background: #5a4a36; width: 80%;"></div>
+							<div class="tp-line" style="background: #5a4a36; width: 65%;"></div>
+						</div>
+					</div>
+					<span class="theme-name">typewriter</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #1e1e1e;">
+						<div class="tp-bar" style="background: #323232; height: 14px;"></div>
+						<div style="flex: 1; display: flex;">
+							<div style="width: 30%; background: #252526; border-right: 1px solid #333;"></div>
+							<div style="flex: 1; padding: 6px;">
+								<div class="tp-line" style="background: #569cd6; width: 30%;"></div>
+								<div class="tp-line" style="background: #ce9178; width: 60%;"></div>
+							</div>
+						</div>
+					</div>
+					<span class="theme-name">xcode</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #1a1a2e;">
+						<div style="flex: 1; padding: 8px;">
+							<div style="width: 40px; height: 50px; background: #b71c1c; margin: 0 auto; border-radius: 2px; display: flex; align-items: center; justify-content: center;">
+								<div style="color: #ffd700; font-size: 7px; font-weight: bold;">PASS</div>
+							</div>
+						</div>
+					</div>
+					<span class="theme-name">passport</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #3d2b1f;">
+						<div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+							<div style="width: 50px; height: 50px; border-radius: 50%; background: #111; border: 3px solid #333; display: flex; align-items: center; justify-content: center;">
+								<div style="width: 16px; height: 16px; border-radius: 50%; background: #e53935;"></div>
+							</div>
+						</div>
+					</div>
+					<span class="theme-name">vinyl-record</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #000;">
+						<div style="flex: 1; padding: 10px; font-family: monospace; font-size: 7px; color: #0f0;">
+							<div>BIOS v2.1</div>
+							<div style="color: #aaa;">RAM: OK</div>
+							<div style="color: #fff;">Loading...</div>
+							<div style="background: #0f0; height: 3px; width: 60%; margin-top: 4px;"></div>
+						</div>
+					</div>
+					<span class="theme-name">bootscreen</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #d0c8b8;">
+						<div style="flex: 1; padding: 10px; text-align: center;">
+							<div style="font-size: 6px; text-transform: uppercase; letter-spacing: 1px; color: #666; margin-bottom: 4px;">ACT I</div>
+							<div class="tp-line" style="background: #333; width: 40%; margin: 0 auto;"></div>
+							<div class="tp-line" style="background: #888; width: 70%; margin: 4px auto 0;"></div>
+						</div>
+					</div>
+					<span class="theme-name">stage-play</span>
+				</div>
+				<div class="theme-card">
+					<div class="theme-preview" style="background: #191b22;">
+						<div style="flex: 1; padding: 8px;">
+							<div style="background: #313543; border-radius: 6px; padding: 6px;">
+								<div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+									<div style="width: 14px; height: 14px; border-radius: 50%; background: #6364ff;"></div>
+									<div class="tp-line" style="background: #9baec8; width: 40%;"></div>
+								</div>
+								<div class="tp-line" style="background: #d9e1e8; width: 80%;"></div>
+							</div>
+						</div>
+					</div>
+					<span class="theme-name">fediverse-toot</span>
+				</div>
+			</div>
+		</div>
+		<p class="themes-hint reveal" style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); margin-top: 1.5rem; text-align: center;">Scroll to see more &rarr; &nbsp; 30 themes total</p>
 	</section>
 
 	<!-- WHAT BLATT IS NOT -->

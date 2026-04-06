@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }} — {{ config.site.name }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=SF+Mono&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #f2f2f7; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--blue: #007aff;
+			--blue-light: rgba(0,122,255,0.1);
+			--bg: #f2f2f7;
+			--card: #ffffff;
+			--text: #1c1c1e;
+			--secondary: #3c3c43;
+			--tertiary: #8e8e93;
+			--separator: rgba(60,60,67,0.12);
+			--radius: 14px;
+		}
+
+		body {
+			background: var(--bg);
+			color: var(--text);
+			font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+			font-size: 15px;
+			line-height: 1.55;
+			min-height: 100vh;
+		}
+
+		/* Sidebar + content layout */
+		.layout {
+			display: flex;
+			min-height: 100vh;
+		}
+
+		/* Sidebar */
+		.sidebar {
+			width: 260px;
+			flex-shrink: 0;
+			background: rgba(255,255,255,0.72);
+			backdrop-filter: blur(20px) saturate(180%);
+			-webkit-backdrop-filter: blur(20px) saturate(180%);
+			border-right: 1px solid var(--separator);
+			padding: 28px 0;
+			position: sticky;
+			top: 0;
+			height: 100vh;
+			overflow-y: auto;
+		}
+
+		.sidebar-logo {
+			padding: 0 20px 20px;
+			border-bottom: 1px solid var(--separator);
+			margin-bottom: 12px;
+		}
+
+		.sidebar-logo-name {
+			font-size: 13px;
+			font-weight: 600;
+			color: var(--text);
+			letter-spacing: -0.01em;
+		}
+
+		.sidebar-logo-sub {
+			font-size: 11px;
+			color: var(--tertiary);
+			margin-top: 2px;
+		}
+
+		.sidebar-section-label {
+			font-size: 11px;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			color: var(--tertiary);
+			padding: 12px 20px 6px;
+		}
+
+		.sidebar-item {
+			display: block;
+			padding: 7px 20px;
+			font-size: 14px;
+			font-weight: 400;
+			color: var(--secondary);
+			text-decoration: none;
+			border-radius: 8px;
+			margin: 0 8px;
+		}
+
+		.sidebar-item.active {
+			background: var(--blue-light);
+			color: var(--blue);
+			font-weight: 500;
+		}
+
+		/* Main */
+		.main {
+			flex: 1;
+			padding: 32px 40px 60px;
+			max-width: 780px;
+		}
+
+		/* Breadcrumb */
+		.breadcrumb {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			font-size: 12px;
+			color: var(--tertiary);
+			margin-bottom: 24px;
+		}
+
+		.breadcrumb-sep {
+			opacity: 0.5;
+		}
+
+		.breadcrumb-current {
+			color: var(--blue);
+			font-weight: 500;
+		}
+
+		/* Page header */
+		.page-header {
+			margin-bottom: 32px;
+		}
+
+		.page-title {
+			font-size: 34px;
+			font-weight: 700;
+			letter-spacing: -0.02em;
+			color: var(--text);
+			line-height: 1.15;
+			margin-bottom: 12px;
+		}
+
+		.page-meta {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			flex-wrap: wrap;
+		}
+
+		.meta-chip {
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+			font-size: 12px;
+			font-weight: 500;
+			color: var(--blue);
+			background: var(--blue-light);
+			padding: 4px 10px;
+			border-radius: 999px;
+		}
+
+		.meta-plain {
+			font-size: 12px;
+			color: var(--tertiary);
+		}
+
+		/* Content card */
+		.content-card {
+			background: var(--card);
+			border-radius: var(--radius);
+			box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06);
+			padding: 32px 36px;
+			margin-bottom: 20px;
+		}
+
+		/* Content styles */
+		.content-area h1 {
+			font-size: 26px;
+			font-weight: 700;
+			letter-spacing: -0.02em;
+			color: var(--text);
+			margin-top: 36px;
+			margin-bottom: 12px;
+			line-height: 1.2;
+		}
+
+		.content-area h2 {
+			font-size: 20px;
+			font-weight: 600;
+			letter-spacing: -0.01em;
+			color: var(--text);
+			margin-top: 28px;
+			margin-bottom: 10px;
+		}
+
+		.content-area h3 {
+			font-size: 16px;
+			font-weight: 600;
+			color: var(--text);
+			margin-top: 20px;
+			margin-bottom: 8px;
+		}
+
+		.content-area h4, .content-area h5, .content-area h6 {
+			font-size: 14px;
+			font-weight: 600;
+			color: var(--secondary);
+			margin-top: 16px;
+			margin-bottom: 6px;
+		}
+
+		.content-area p {
+			margin-bottom: 14px;
+			color: var(--secondary);
+			line-height: 1.65;
+		}
+
+		.content-area a {
+			color: var(--blue);
+			text-decoration: none;
+		}
+
+		.content-area a:hover {
+			text-decoration: underline;
+		}
+
+		.content-area code {
+			font-family: "SF Mono", "Menlo", "Monaco", monospace;
+			font-size: 12.5px;
+			background: var(--bg);
+			color: #c0392b;
+			padding: 2px 6px;
+			border-radius: 5px;
+		}
+
+		.content-area pre {
+			background: #1c1c1e;
+			border-radius: 10px;
+			padding: 18px 20px;
+			margin: 16px 0;
+			overflow-x: auto;
+		}
+
+		.content-area pre code {
+			background: none;
+			color: #e5e5ea;
+			padding: 0;
+			font-size: 13px;
+		}
+
+		.content-area blockquote {
+			background: var(--blue-light);
+			border-left: 3px solid var(--blue);
+			border-radius: 0 10px 10px 0;
+			padding: 14px 18px;
+			margin: 16px 0;
+		}
+
+		.content-area blockquote p {
+			color: var(--blue);
+			margin: 0;
+			font-weight: 500;
+		}
+
+		.content-area ul {
+			margin: 10px 0 16px 20px;
+			color: var(--secondary);
+		}
+
+		.content-area ol {
+			margin: 10px 0 16px 24px;
+			color: var(--secondary);
+		}
+
+		.content-area li {
+			margin-bottom: 6px;
+			line-height: 1.55;
+		}
+
+		.content-area table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 16px 0;
+			font-size: 14px;
+			border-radius: 10px;
+			overflow: hidden;
+		}
+
+		.content-area th {
+			background: var(--bg);
+			padding: 10px 14px;
+			text-align: left;
+			font-size: 12px;
+			font-weight: 600;
+			color: var(--tertiary);
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+		}
+
+		.content-area td {
+			padding: 10px 14px;
+			border-top: 1px solid var(--separator);
+			color: var(--secondary);
+		}
+
+		.content-area img {
+			max-width: 100%;
+			border-radius: 10px;
+			margin: 12px 0;
+		}
+
+		.content-area hr {
+			border: none;
+			border-top: 1px solid var(--separator);
+			margin: 24px 0;
+		}
+
+		/* Tags card */
+		.tags-card {
+			background: var(--card);
+			border-radius: var(--radius);
+			box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+			padding: 16px 20px;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.tags-label {
+			font-size: 11px;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			color: var(--tertiary);
+		}
+
+		.tag {
+			font-size: 12px;
+			font-weight: 500;
+			color: var(--blue);
+			background: var(--blue-light);
+			padding: 3px 10px;
+			border-radius: 999px;
+		}
+
+		@media (max-width: 700px) {
+			.sidebar { display: none; }
+			.main { padding: 20px 16px 40px; }
+			.page-title { font-size: 26px; }
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="layout">
+
+		<nav class="sidebar">
+			<div class="sidebar-logo">
+				<div class="sidebar-logo-name">{{ config.site.name }}</div>
+				<div class="sidebar-logo-sub">Human Interface Guidelines</div>
+			</div>
+			<div class="sidebar-section-label">Topics</div>
+			<a href="#" class="sidebar-item active">{{ title }}</a>
+			<div class="sidebar-section-label">Author</div>
+			<a href="#" class="sidebar-item">{{ config.site.author }}</a>
+			<div class="sidebar-section-label">Published</div>
+			<a href="#" class="sidebar-item">{{ published_date }}</a>
+			{% if taxonomy.tags %}
+			<div class="sidebar-section-label">Tags</div>
+			{% for tag in taxonomy.tags %}
+			<a href="#" class="sidebar-item">{{ tag }}</a>
+			{% endfor %}
+			{% endif %}
+		</nav>
+
+		<main class="main">
+
+			<div class="breadcrumb">
+				<span>{{ config.site.name }}</span>
+				<span class="breadcrumb-sep">/</span>
+				<span>Posts</span>
+				<span class="breadcrumb-sep">/</span>
+				<span class="breadcrumb-current">{{ title }}</span>
+			</div>
+
+			<div class="page-header">
+				<h1 class="page-title">{{ title }}</h1>
+				<div class="page-meta">
+					<span class="meta-chip">{{ config.site.author }}</span>
+					<span class="meta-plain">{{ published_date }}</span>
+					<span class="meta-plain">{{ reading_time }}</span>
+					{% if updated_date %}<span class="meta-plain">Updated {{ updated_date }}</span>{% endif %}
+				</div>
+			</div>
+
+			<div class="content-card">
+				<div class="content-area">
+					{{ content | safe }}
+				</div>
+			</div>
+
+			{% if taxonomy.tags %}
+			<div class="tags-card">
+				<span class="tags-label">Tags</span>
+				{% for tag in taxonomy.tags %}
+				<span class="tag">{{ tag }}</span>
+				{% endfor %}
+			</div>
+			{% endif %}
+
+		</main>
+	</div>
+
+</body>
+</html>

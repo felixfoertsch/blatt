@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<title>{{ title }} — {{ config.site.name }}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+	<style>
+		html { background: #d0c8b8; }
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--paper: #fffff8;
+			--ink: #111111;
+			--ink-dim: #444444;
+			--ink-light: #777777;
+			--border: #cccccc;
+		}
+
+		body {
+			background: #d0c8b8;
+			min-height: 100vh;
+			padding: 40px 16px 80px;
+			font-family: "Courier Prime", "Courier New", monospace;
+			font-size: 14px;
+			line-height: 1.6;
+			color: var(--ink);
+		}
+
+		/* Script page */
+		.script {
+			background: var(--paper);
+			max-width: 760px;
+			margin: 0 auto;
+			padding: 60px 80px 80px;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.15), 0 8px 40px rgba(0,0,0,0.15);
+		}
+
+		/* Title page block */
+		.title-block {
+			text-align: center;
+			margin-bottom: 60px;
+			padding-bottom: 40px;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.title-label {
+			font-size: 12px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.2em;
+			color: var(--ink-light);
+			margin-bottom: 20px;
+		}
+
+		.title-main {
+			font-size: 28px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			color: var(--ink);
+			line-height: 1.2;
+			margin-bottom: 12px;
+		}
+
+		.title-subtitle {
+			font-size: 14px;
+			font-style: italic;
+			color: var(--ink-dim);
+			margin-bottom: 40px;
+		}
+
+		.title-byline {
+			font-size: 14px;
+			color: var(--ink-dim);
+			line-height: 2;
+		}
+
+		/* ACT heading */
+		.act-heading {
+			text-align: center;
+			font-size: 14px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.2em;
+			color: var(--ink);
+			margin: 40px 0 24px;
+		}
+
+		/* Scene heading */
+		.scene-heading {
+			font-size: 14px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			color: var(--ink);
+			margin: 32px 0 16px;
+		}
+
+		/* Stage direction */
+		.stage-direction {
+			font-style: italic;
+			color: var(--ink-dim);
+			margin: 12px 64px;
+			font-size: 13px;
+			line-height: 1.55;
+		}
+
+		/* Character name */
+		.character {
+			text-align: center;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			margin-top: 20px;
+			margin-bottom: 4px;
+			font-size: 14px;
+		}
+
+		/* Dialogue */
+		.dialogue {
+			margin: 0 80px 16px;
+			font-size: 14px;
+			line-height: 1.65;
+		}
+
+		/* Parenthetical */
+		.paren {
+			text-align: center;
+			font-style: italic;
+			color: var(--ink-dim);
+			margin-bottom: 4px;
+			font-size: 13px;
+		}
+
+		/* Content area — rendered markdown */
+		.content-area {
+			margin-top: 24px;
+		}
+
+		.content-area h1 {
+			text-align: center;
+			font-size: 14px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.2em;
+			color: var(--ink);
+			margin-top: 40px;
+			margin-bottom: 20px;
+		}
+
+		.content-area h2 {
+			font-size: 14px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+			color: var(--ink);
+			margin-top: 28px;
+			margin-bottom: 12px;
+		}
+
+		.content-area h3 {
+			text-align: center;
+			font-weight: 700;
+			text-transform: uppercase;
+			font-size: 13px;
+			color: var(--ink-dim);
+			margin-top: 24px;
+			margin-bottom: 4px;
+		}
+
+		.content-area h4 {
+			font-style: italic;
+			font-size: 13px;
+			color: var(--ink-dim);
+			margin: 8px 64px;
+		}
+
+		.content-area h5, .content-area h6 {
+			font-size: 13px;
+			color: var(--ink-light);
+			margin: 8px 0;
+		}
+
+		.content-area p {
+			margin: 0 80px 16px;
+			font-size: 14px;
+			line-height: 1.65;
+		}
+
+		.content-area a {
+			color: var(--ink);
+			text-decoration: underline;
+		}
+
+		.content-area code {
+			font-family: "Courier Prime", monospace;
+			font-size: 13px;
+			background: rgba(0,0,0,0.06);
+			padding: 1px 4px;
+		}
+
+		.content-area pre {
+			background: rgba(0,0,0,0.04);
+			border-left: 3px solid var(--border);
+			padding: 12px 16px;
+			margin: 14px 0;
+			overflow-x: auto;
+		}
+
+		.content-area pre code {
+			background: none;
+			padding: 0;
+		}
+
+		/* Blockquote = stage direction */
+		.content-area blockquote {
+			font-style: italic;
+			color: var(--ink-dim);
+			margin: 12px 64px;
+			font-size: 13px;
+		}
+
+		.content-area blockquote::before {
+			content: "[";
+		}
+
+		.content-area blockquote::after {
+			content: "]";
+		}
+
+		.content-area blockquote p {
+			margin: 0;
+			display: inline;
+		}
+
+		.content-area ul {
+			margin: 10px 80px 16px;
+			list-style: none;
+			padding: 0;
+		}
+
+		.content-area ul li {
+			padding-left: 16px;
+			margin-bottom: 4px;
+			position: relative;
+		}
+
+		.content-area ul li::before {
+			content: "—";
+			position: absolute;
+			left: 0;
+		}
+
+		.content-area ol {
+			margin: 10px 80px 16px;
+			color: var(--ink);
+		}
+
+		.content-area li {
+			margin-bottom: 4px;
+		}
+
+		.content-area table {
+			width: 100%;
+			border-collapse: collapse;
+			margin: 14px 0;
+			font-size: 13px;
+		}
+
+		.content-area th {
+			font-weight: 700;
+			padding: 6px 12px;
+			border-bottom: 2px solid var(--ink);
+			text-align: left;
+			font-size: 12px;
+			text-transform: uppercase;
+			letter-spacing: 0.06em;
+		}
+
+		.content-area td {
+			padding: 6px 12px;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.content-area img {
+			max-width: 100%;
+			margin: 12px 0;
+		}
+
+		.content-area hr {
+			border: none;
+			margin: 28px 0;
+			text-align: center;
+			font-size: 12px;
+			color: var(--ink-light);
+			letter-spacing: 0.4em;
+		}
+
+		.content-area hr::before {
+			content: "* * * * *";
+		}
+
+		/* Page number footer */
+		.script-footer {
+			margin-top: 48px;
+			padding-top: 12px;
+			border-top: 1px solid var(--border);
+			display: flex;
+			justify-content: space-between;
+			font-size: 12px;
+			color: var(--ink-light);
+		}
+
+		/* Tags as cast list */
+		.cast-list {
+			margin: 20px 0;
+			padding: 16px 0;
+			border-top: 1px solid var(--border);
+			border-bottom: 1px solid var(--border);
+		}
+
+		.cast-label {
+			font-size: 11px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 0.2em;
+			color: var(--ink-light);
+			margin-bottom: 8px;
+			text-align: center;
+		}
+
+		.cast-items {
+			display: flex;
+			gap: 12px;
+			justify-content: center;
+			flex-wrap: wrap;
+		}
+
+		.cast-item {
+			font-size: 12px;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
+			color: var(--ink-dim);
+			font-weight: 700;
+		}
+
+		@media (max-width: 600px) {
+			.script { padding: 32px 20px 48px; }
+			.content-area p,
+			.content-area ul,
+			.content-area ol { margin-left: 16px; margin-right: 16px; }
+			.dialogue { margin-left: 16px; margin-right: 16px; }
+			.stage-direction { margin-left: 16px; margin-right: 16px; }
+		}
+	</style>
+</head>
+<body>
+	<a href="/{{ preview_query }}" style="position:fixed;top:calc(1rem + env(safe-area-inset-top, 0px));left:calc(1rem + env(safe-area-inset-left, 0px));z-index:9999;font-family:system-ui,-apple-system,sans-serif;font-size:0.8rem;padding:0.5rem 0.9rem;background:rgba(255,255,255,0.95);color:#000;text-decoration:none;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(0,0,0,0.1);transition:transform 0.2s">&larr; back</a>
+
+	<div class="script">
+
+		<div class="title-block">
+			<div class="title-label">A Post by</div>
+			<div class="title-main">{{ title }}</div>
+			<div class="title-subtitle">A reading in one act</div>
+			<div class="title-byline">
+				Written by {{ config.site.author }}<br>
+				{{ config.site.name }}<br>
+				{{ published_date }}
+			</div>
+		</div>
+
+		{% if taxonomy.tags %}
+		<div class="cast-list">
+			<div class="cast-label">Dramatis Personae</div>
+			<div class="cast-items">
+				{% for tag in taxonomy.tags %}
+				<span class="cast-item">{{ tag }}</span>
+				{% endfor %}
+			</div>
+		</div>
+		{% endif %}
+
+		<div class="act-heading">ACT I</div>
+
+		<div class="scene-heading">Scene 1. {{ config.site.name }}, the present day.</div>
+
+		<div class="stage-direction">
+			The stage is bare. A single light falls on a reading stand. The author steps forward. Reading time: {{ reading_time }}.
+		</div>
+
+		<div class="character">{{ config.site.author | upper }}</div>
+		<div class="paren">(addressing the audience)</div>
+
+		<div class="content-area">
+			{{ content | safe }}
+		</div>
+
+		<div class="stage-direction">
+			The author steps back. Lights fade.
+			{% if updated_date %}This work was last revised on {{ updated_date }}.{% endif %}
+		</div>
+
+		<div class="act-heading">— CURTAIN —</div>
+
+		<div class="script-footer">
+			<span>{{ config.site.name }}</span>
+			<span>{{ published_date }}</span>
+			<span>1.</span>
+		</div>
+
+	</div>
+
+</body>
+</html>
